@@ -418,11 +418,11 @@ void listenerLoopFinish()
         MONITOR_FOLDER_METHOD_PROCESS_SHOULD_EXECUTE_METHOD = false;
         PA_YieldAbsolute();  
         //tell listener to die      
-        while(MONITOR_FOLDER_METHOD_PROCESS_ID)
-        {
-            PA_YieldAbsolute();
+//        while(MONITOR_FOLDER_METHOD_PROCESS_ID)
+//        {
+//            PA_YieldAbsolute();
             PA_UnfreezeProcess(MONITOR_FOLDER_METHOD_PROCESS_ID);
-        }
+//        }
     }
 } 
 
