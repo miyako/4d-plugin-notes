@@ -32,6 +32,17 @@ title|TEXT|
 body|TEXT|
 attachments|ARRAY BLOB|
 names|ARRAY TEXT|
+note|TEXT|JSON object
+
+Properties of ``note``:
+
+* ``id``:``string``
+* ``title``:``string``
+* ``body``:``string``
+* ``creationDate``:``string``
+* ``creationLocalDate``:``string``
+* ``modificationDate``:``string``
+* ``modificationLocalDate``:``string``
 
 ```
 Notes GET FOLDERS (folders)
@@ -39,7 +50,18 @@ Notes GET FOLDERS (folders)
 
 Parameter|Type|Description
 ------------|------------|----
-folders|ARRAY TEXT|
+folders|ARRAY TEXT|JSON object
+
+Properties of ``folders``:
+
+* ``folders``:``array`` of ``folder``
+
+Properties of ``folder``:
+
+* ``id``:``string``
+* ``name``:``string``
+* ``notes``:``array`` of ``string`` (id)
+* ``folders``:``array`` of ``folder`` (non-recursive)
 
 ```
 Notes GET NOTES (notes)
@@ -47,7 +69,17 @@ Notes GET NOTES (notes)
 
 Parameter|Type|Description
 ------------|------------|----
-notes|ARRAY TEXT|
+notes|ARRAY TEXT|JSON object
+
+Properties of ``notes``:
+
+* ``notes``:``array`` of ``note``
+
+Properties of ``note``:
+
+* ``id``:``string``
+* ``name``:``string``
+* ``attachments``:``array`` of ``string`` (id)
 
 ```
 Notes GET ATTACHMENTS (attachments)
@@ -55,7 +87,17 @@ Notes GET ATTACHMENTS (attachments)
 
 Parameter|Type|Description
 ------------|------------|----
-attachments|ARRAY TEXT|
+attachments|ARRAY TEXT|JSON object
+
+Properties of ``attachments``:
+
+* ``attachments``:``array`` of ``attachment``
+
+Properties of ``attachment``:
+
+* ``id``:``string``
+* ``name``:``string``
+* ``note``:``string`` (id)
 
 ```
 Notes GET ACCOUNTS (accounts)
@@ -63,7 +105,17 @@ Notes GET ACCOUNTS (accounts)
 
 Parameter|Type|Description
 ------------|------------|----
-accounts|ARRAY TEXT|
+accounts|ARRAY TEXT|JSON object
+
+Properties of ``accounts``:
+
+* ``accounts``:``array`` of ``account``
+
+Properties of ``account``:
+
+* ``id``:``string``
+* ``name``:``string``
+* ``folders``:``array`` of ``folder`` (non-recursive)
 
 ```
 folder:=Notes Create folder (parent;name)
@@ -73,7 +125,81 @@ Parameter|Type|Description
 ------------|------------|----
 parent|TEXT|
 name|TEXT|
-folder|TEXT|
+folder|TEXT|JSON object
+
+Properties of ``folder``:
+
+* ``id``:``string``
+* ``name``:``string``
+
+```
+path:=Notes Get attachment (id)
+```
+
+Parameter|Type|Description
+------------|------------|----
+attachment|TEXT|
+path|TEXT|
+
+**Note**: This methods call ``sqlite3`` to resolve the attachment path.
+
+```
+note:=Notes Get note (id)
+```
+
+Parameter|Type|Description
+------------|------------|----
+id|TEXT|
+note|TEXT|JSON object
+
+Properties of ``note``:
+
+* ``title``:``string``
+* ``body``:``string``
+* ``folder``:``string`` (id)
+* ``creationDate``:``string``
+* ``creationLocalDate``:``string``
+* ``modificationDate``:``string``
+* ``modificationLocalDate``:``string``
+* ``attachments``:``array`` of ``string`` (id)
+
+```
+folder:=Notes Get folder (id)
+```
+
+Parameter|Type|Description
+------------|------------|----
+id|TEXT|
+folder|TEXT|JSON object
+
+Properties of ``folder``:
+
+* ``id``:``string``
+* ``name``:``string``
+* ``folders``:``array`` of ``folder``(recursive) 
+* ``notes``:``array`` of ``note`` (top level only)
+
+Properties of ``note``:
+
+* ``id``:``string``
+* ``name``:``string``
+
+```
+account:=Notes Get account (id)
+```
+
+Parameter|Type|Description
+------------|------------|----
+id|TEXT|
+account|TEXT|
+
+Properties of ``account``:
+
+* ``id``:``string``
+* ``name``:``string``
+* ``folders``:``array`` of ``folder``(recursive) 
+
+---
 
 ```
 Notes SET NOTIFICATION (method)
@@ -90,39 +216,3 @@ method:=Notes Get notification
 Parameter|Type|Description
 ------------|------------|----
 method|TEXT|
-
-```
-json:=Notes Get attachment (attachment)
-```
-
-Parameter|Type|Description
-------------|------------|----
-attachment|TEXT|
-json|TEXT|
-
-```
-json:=Notes Get note (note)
-```
-
-Parameter|Type|Description
-------------|------------|----
-note|TEXT|
-json|TEXT|
-
-```
-json:=Notes Get folder (folder)
-```
-
-Parameter|Type|Description
-------------|------------|----
-folder|TEXT|
-json|TEXT|
-
-```
-json:=Notes Get account (account)
-```
-
-Parameter|Type|Description
-------------|------------|----
-account|TEXT|
-json|TEXT|
