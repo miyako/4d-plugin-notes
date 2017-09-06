@@ -9,7 +9,7 @@
 	<key>CFBundleExecutable</key>
 	<string>Notes</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.4D.4DPlugin.Notes.v2</string>
+	<string>com.4D.4DPlugin.notes</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundlePackageType</key>

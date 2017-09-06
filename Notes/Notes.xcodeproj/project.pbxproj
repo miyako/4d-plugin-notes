@@ -52,11 +52,10 @@
 		D13116F41A03C7AF00DE1322 /* ARRAY_DATE.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D13116F21A03C7AF00DE1322 /* ARRAY_DATE.cpp */; };
 		D13116F51A03C7AF00DE1322 /* ARRAY_DATE.h in Headers */ = {isa = PBXBuildFile; fileRef = D13116F31A03C7AF00DE1322 /* ARRAY_DATE.h */; };
 		D134D4AC1A030BA0008D14EF /* manifest.json in CopyFiles */ = {isa = PBXBuildFile; fileRef = D134D4A91A030B06008D14EF /* manifest.json */; };
+		D1557FB41F5F64C900E06347 /* libjson.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D1557FB31F5F64C900E06347 /* libjson.a */; };
+		D1557FB71F5F659100E06347 /* ScriptingBridge.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1557FB61F5F659100E06347 /* ScriptingBridge.framework */; };
+		D1557FB91F5FB18700E06347 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D1557FB81F5FB18700E06347 /* libsqlite3.dylib */; };
 		D175D9CD1A02E8DD0006B569 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D175D9CC1A02E8DD0006B569 /* CoreGraphics.framework */; };
-		D1DDF7CD1F5E5DA700ED0295 /* libjson.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D1DDF7CC1F5E5DA700ED0295 /* libjson.a */; };
-		D1DDF7D01F5E5DB200ED0295 /* ScriptingBridge.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1DDF7CF1F5E5DB200ED0295 /* ScriptingBridge.framework */; };
-		D1DDF7D21F5E63E500ED0295 /* Notes.h in Headers */ = {isa = PBXBuildFile; fileRef = D1DDF7D11F5E63E500ED0295 /* Notes.h */; };
-		D1DDF7D71F5EA0F400ED0295 /* AppleScriptObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D1DDF7D61F5EA0F400ED0295 /* AppleScriptObjC.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -121,11 +120,10 @@
 		D13116F31A03C7AF00DE1322 /* ARRAY_DATE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ARRAY_DATE.h; path = Classes/ARRAY_DATE.h; sourceTree = "<group>"; };
 		D134D4A91A030B06008D14EF /* manifest.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = manifest.json; sourceTree = "<group>"; };
 		D14D10DD1A03A8A5008B3411 /* constants.xlf */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = constants.xlf; sourceTree = "<group>"; };
+		D1557FB31F5F64C900E06347 /* libjson.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjson.a; path = a/libjson.a; sourceTree = "<group>"; };
+		D1557FB61F5F659100E06347 /* ScriptingBridge.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ScriptingBridge.framework; path = System/Library/Frameworks/ScriptingBridge.framework; sourceTree = SDKROOT; };
+		D1557FB81F5FB18700E06347 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		D175D9CC1A02E8DD0006B569 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		D1DDF7CC1F5E5DA700ED0295 /* libjson.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libjson.a; path = a/libjson.a; sourceTree = "<group>"; };
-		D1DDF7CF1F5E5DB200ED0295 /* ScriptingBridge.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ScriptingBridge.framework; path = System/Library/Frameworks/ScriptingBridge.framework; sourceTree = SDKROOT; };
-		D1DDF7D11F5E63E500ED0295 /* Notes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Notes.h; sourceTree = "<group>"; };
-		D1DDF7D61F5EA0F400ED0295 /* AppleScriptObjC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppleScriptObjC.framework; path = System/Library/Frameworks/AppleScriptObjC.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -133,10 +131,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D1DDF7D71F5EA0F400ED0295 /* AppleScriptObjC.framework in Frameworks */,
-				D1DDF7D01F5E5DB200ED0295 /* ScriptingBridge.framework in Frameworks */,
+				D1557FB91F5FB18700E06347 /* libsqlite3.dylib in Frameworks */,
+				D1557FB71F5F659100E06347 /* ScriptingBridge.framework in Frameworks */,
 				D13116C71A03B5B600DE1322 /* AppKit.framework in Frameworks */,
-				D1DDF7CD1F5E5DA700ED0295 /* libjson.a in Frameworks */,
+				D1557FB41F5F64C900E06347 /* libjson.a in Frameworks */,
 				D175D9CD1A02E8DD0006B569 /* CoreGraphics.framework in Frameworks */,
 				D130064F12F02D9700702C0E /* Cocoa.framework in Frameworks */,
 			);
@@ -153,7 +151,7 @@
 				089C167CFE841241C02AAC07 /* Resources */,
 				089C1671FE841209C02AAC07 /* External Frameworks and Libraries */,
 				189286360695AD8900B05D6E /* Products */,
-				D1DDF7D31F5EA0EC00ED0295 /* Frameworks */,
+				D1557FB51F5F659100E06347 /* Frameworks */,
 			);
 			name = Notes;
 			sourceTree = "<group>";
@@ -161,8 +159,7 @@
 		089C1671FE841209C02AAC07 /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				D1DDF7CC1F5E5DA700ED0295 /* libjson.a */,
-				D1DDF7CF1F5E5DB200ED0295 /* ScriptingBridge.framework */,
+				D1557FB31F5F64C900E06347 /* libjson.a */,
 				D13116C61A03B5B600DE1322 /* AppKit.framework */,
 				D175D9CC1A02E8DD0006B569 /* CoreGraphics.framework */,
 				D130064E12F02D9700702C0E /* Cocoa.framework */,
@@ -184,7 +181,6 @@
 			children = (
 				18B684FE06944F8800CC6A1E /* 4DPlugin.cpp */,
 				D120937E13534DCC00A72CAA /* 4DPlugin.h */,
-				D1DDF7D11F5E63E500ED0295 /* Notes.h */,
 				18B684ED06944F2000CC6A1E /* 4D Plugin API */,
 				32BAE0B30371A71500C91783 /* 4D Plugin_Prefix.pch */,
 			);
@@ -268,6 +264,15 @@
 			name = ARRAY;
 			sourceTree = "<group>";
 		};
+		D1557FB51F5F659100E06347 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				D1557FB81F5FB18700E06347 /* libsqlite3.dylib */,
+				D1557FB61F5F659100E06347 /* ScriptingBridge.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		D19CC171135378140004336E /* Classes */ = {
 			isa = PBXGroup;
 			children = (
@@ -275,14 +280,6 @@
 				D13116D01A03BBA100DE1322 /* C */,
 			);
 			name = Classes;
-			sourceTree = "<group>";
-		};
-		D1DDF7D31F5EA0EC00ED0295 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				D1DDF7D61F5EA0F400ED0295 /* AppleScriptObjC.framework */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -298,7 +295,6 @@
 				18B684F706944F2000CC6A1E /* 4DPluginAPI.h in Headers */,
 				D13116B91A03B3C300DE1322 /* C_DATE.h in Headers */,
 				D13116BD1A03B3C300DE1322 /* C_TIME.h in Headers */,
-				D1DDF7D21F5E63E500ED0295 /* Notes.h in Headers */,
 				18B684F806944F2000CC6A1E /* EntryPoints.h in Headers */,
 				18B684F906944F2000CC6A1E /* Flags.h in Headers */,
 				D13116E31A03BC1100DE1322 /* ARRAY_BOOLEAN.h in Headers */,
@@ -448,7 +444,6 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "4D Plugin_Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = NDEBUG;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
@@ -460,10 +455,9 @@
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
-				PRODUCT_BUNDLE_IDENTIFIER = com.4D.4DPlugin.Notes.v2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.4D.4DPlugin.notes;
 				PRODUCT_NAME = Notes;
 				SECTORDER_FLAGS = "";
-				USER_HEADER_SEARCH_PATHS = include/libjson;
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",
@@ -487,7 +481,6 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "4D Plugin_Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = NDEBUG;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
@@ -499,10 +492,9 @@
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
-				PRODUCT_BUNDLE_IDENTIFIER = com.4D.4DPlugin.Notes.v2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.4D.4DPlugin.notes;
 				PRODUCT_NAME = Notes;
 				SECTORDER_FLAGS = "";
-				USER_HEADER_SEARCH_PATHS = include/libjson;
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",
@@ -524,7 +516,6 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "4D Plugin_Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = NDEBUG;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
@@ -536,10 +527,9 @@
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
-				PRODUCT_BUNDLE_IDENTIFIER = com.4D.4DPlugin.Notes.v2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.4D.4DPlugin.notes;
 				PRODUCT_NAME = Notes;
 				SECTORDER_FLAGS = "";
-				USER_HEADER_SEARCH_PATHS = include/libjson;
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",
@@ -566,6 +556,7 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = NDEBUG;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_VERSION = "";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -578,6 +569,7 @@
 				OBJROOT = "$(SRCROOT)/build";
 				SDKROOT = macosx10.8;
 				SYMROOT = "$(SRCROOT)/$(PRODUCT_NAME).4dbase/Plugins";
+				USER_HEADER_SEARCH_PATHS = include/libjson;
 			};
 			name = Development;
 		};
@@ -598,6 +590,7 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = NDEBUG;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_VERSION = "";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -610,6 +603,7 @@
 				OBJROOT = "$(SRCROOT)/build";
 				SDKROOT = macosx10.8;
 				SYMROOT = "$(SRCROOT)/$(PRODUCT_NAME).4dbase/Plugins";
+				USER_HEADER_SEARCH_PATHS = include/libjson;
 			};
 			name = Deployment;
 		};
@@ -629,6 +623,7 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = NDEBUG;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_VERSION = "";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -640,6 +635,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				SDKROOT = macosx10.8;
 				SYMROOT = "$(SRCROOT)/$(PRODUCT_NAME).4dbase/Plugins";
+				USER_HEADER_SEARCH_PATHS = include/libjson;
 			};
 			name = Default;
 		};

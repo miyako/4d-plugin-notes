@@ -90,7 +90,7 @@
 		</data>
 		<key>Resources/Documentation/index.html</key>
 		<data>
-		D5rvlQ5p+kf0nFpZXT6nuP9CouQ=
+		DK0Mh0h9rizacItLKjCqMfd/jBA=
 		</data>
 		<key>Resources/Documentation/styles/common.css</key>
 		<data>
@@ -112,15 +112,6 @@
 	</dict>
 	<key>files2</key>
 	<dict>
-		<key>MacOS/Notes.html</key>
-		<dict>
-			<key>cdhash</key>
-			<data>
-			rtSo3f0reLghcwqw9bsq2wSl93Q=
-			</data>
-			<key>requirement</key>
-			<string>identifier Notes and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = Y69CWUC25B</string>
-		</dict>
 		<key>QuickLook/Thumbnail.png</key>
 		<dict>
 			<key>hash</key>
@@ -367,11 +358,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			D5rvlQ5p+kf0nFpZXT6nuP9CouQ=
+			DK0Mh0h9rizacItLKjCqMfd/jBA=
 			</data>
 			<key>hash2</key>
 			<data>
-			aHSDzEeZHw62BOhwBPE2Vy3ephteOVP/ytx71c2ivDs=
+			rIAvQVh65PgBG7TBv8mqhdAB9NWWj/IwamAewYqrMC0=
 			</data>
 		</dict>
 		<key>Resources/Documentation/styles/common.css</key>
@@ -420,17 +411,6 @@
 			rp5mwPoToTOMBrO5g9ATVRBDkkR1XpJE6MF06FX5mo0=
 			</data>
 		</dict>
-		<key>Windows/Notes.html</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			3f3hE90+GMuzyHmK9RVQvLK+Zs8=
-			</data>
-			<key>hash2</key>
-			<data>
-			EKLRdLPtg+PsdxOrCPdnhlHZLbWCJYLapu/sbQTYgHg=
-			</data>
-		</dict>
 		<key>Windows64/Notes.4DX</key>
 		<dict>
 			<key>hash</key>
@@ -440,17 +420,6 @@
 			<key>hash2</key>
 			<data>
 			D81BlAXC8IYBjKsGDu0nx8Zm3OxlDG6/r2pFvj/FY7A=
-			</data>
-		</dict>
-		<key>Windows64/Notes.html</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			3f3hE90+GMuzyHmK9RVQvLK+Zs8=
-			</data>
-			<key>hash2</key>
-			<data>
-			EKLRdLPtg+PsdxOrCPdnhlHZLbWCJYLapu/sbQTYgHg=
 			</data>
 		</dict>
 		<key>manifest.json</key>
