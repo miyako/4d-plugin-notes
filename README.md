@@ -59,12 +59,12 @@ Parameter|Type|Description
 accounts|ARRAY TEXT|
 
 ```
-folder:=Notes Create folder (account;name)
+folder:=Notes Create folder (parent;name)
 ```
 
 Parameter|Type|Description
 ------------|------------|----
-account|TEXT|
+parent|TEXT|
 name|TEXT|
 folder|TEXT|
 
