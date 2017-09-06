@@ -220,6 +220,13 @@ namespace Notes
 																																														 error:nil];
 	const char *sqlPath;
 	
+	typedef struct
+	{
+		NotesNote *note;
+		NSData *data;
+		NSString *name;
+	}add_attachment_ctx;
+	
 	NSString *mediaPath = nil;
 	NSString *previewPath = nil;
 	
@@ -577,6 +584,11 @@ namespace Notes
 				}
 			}
 		}
+	}
+	
+	void addAttachment2(add_attachment_ctx *ctx)
+	{
+		addAttachment(ctx->note, ctx->data, ctx->name);
 	}
 	
 	/*
@@ -1010,6 +1022,9 @@ namespace Notes
 				{
 					for(unsigned int i = 0; i <= param4_count; ++i)
 					{
+						//core animation problem..?
+						PA_YieldAbsolute();
+						
 						PA_Blob param4_blob = PA_GetBlobInArray(*attachments, i);
 						const void *param4_buf = (const void *)PA_LockHandle(param4_blob.fHandle);
 						NSUInteger param4_len = (NSUInteger)param4_blob.fSize;
@@ -1027,6 +1042,13 @@ namespace Notes
 							//apparently this side is OK; because it is not a handle..?							
 							NSString *name = [[NSString alloc]initWithCharacters:param5_text.fString length:param5_text.fLength];
 							
+							add_attachment_ctx ctx;
+							ctx.data = data;
+							ctx.name = name;
+							ctx.note = note;
+							
+							//autorelease problem
+//							PA_RunInMainProcess((PA_RunInMainProcessProcPtr)Notes::addAttachment2, &ctx);
 							addAttachment(note, data, name);
 							
 							[name release];
