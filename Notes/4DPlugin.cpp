@@ -1015,8 +1015,16 @@ namespace Notes
 						NSUInteger param4_len = (NSUInteger)param4_blob.fSize;
 						if(param4_len)
 						{
-							NSData *data = [[NSData alloc]initWithBytes:param4_buf length:param4_len];
+							//4D crashes; need to copy..?
+							
+							C_BLOB buf;
+							buf.setBytes((const uint8_t *)param4_buf, (unsigned int)param4_len);
+							NSData *data = [[NSData alloc]initWithBytes:buf.getBytesPtr() length:buf.getBytesLength()];
+//							NSData *data = [[NSData alloc]initWithBytes:param4_buf length:param4_len];
+							
 							PA_Unistring param5_text = PA_GetStringInArray(*filenames, i);
+							
+							//apparently this side is OK; because it is not a handle..?							
 							NSString *name = [[NSString alloc]initWithCharacters:param5_text.fString length:param5_text.fLength];
 							
 							addAttachment(note, data, name);

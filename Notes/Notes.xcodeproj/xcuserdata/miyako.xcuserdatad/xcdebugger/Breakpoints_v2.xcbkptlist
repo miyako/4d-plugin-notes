@@ -14,7 +14,9 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1377"
-            endingLineNumber = "1377">
+            endingLineNumber = "1377"
+            landmarkName = "Notes_Get_notification(sLONG_PTR *pResult, PackagePtr pParams)"
+            landmarkType = "9">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
