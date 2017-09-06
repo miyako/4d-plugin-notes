@@ -50,7 +50,7 @@ Notes GET FOLDERS (folders)
 
 Parameter|Type|Description
 ------------|------------|----
-folders|ARRAY TEXT|JSON object
+folders|ARRAY TEXT|names + JSON object in element ``0``
 
 Properties of ``folders``:
 
@@ -69,7 +69,7 @@ Notes GET NOTES (notes)
 
 Parameter|Type|Description
 ------------|------------|----
-notes|ARRAY TEXT|JSON object
+notes|ARRAY TEXT|names + JSON object in element ``0``
 
 Properties of ``notes``:
 
@@ -87,7 +87,7 @@ Notes GET ATTACHMENTS (attachments)
 
 Parameter|Type|Description
 ------------|------------|----
-attachments|ARRAY TEXT|JSON object
+attachments|ARRAY TEXT|names + JSON object in element ``0``
 
 Properties of ``attachments``:
 
@@ -105,7 +105,7 @@ Notes GET ACCOUNTS (accounts)
 
 Parameter|Type|Description
 ------------|------------|----
-accounts|ARRAY TEXT|JSON object
+accounts|ARRAY TEXT|names + JSON object in element ``0``
 
 Properties of ``accounts``:
 
