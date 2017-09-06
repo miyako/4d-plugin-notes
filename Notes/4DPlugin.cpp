@@ -202,6 +202,14 @@ void json_stringify(JSONNODE *json, C_TEXT &t, BOOL pretty = NO)
 	json_free(json_string);
 }
 
+namespace SQL
+{
+	NSString *toString(const unsigned char *value)
+	{
+		return value ? [NSString stringWithUTF8String:(const char *)value] : @"";
+	}
+}
+
 namespace Notes
 {
 	static NotesApplication *Application = [SBApplication applicationWithBundleIdentifier:NOTES_APP_ID];
@@ -213,18 +221,41 @@ namespace Notes
 	const char *sqlPath;
 	
 	NSString *mediaPath = nil;
+	NSString *previewPath = nil;
+	
+	const char *SQL_GET_NOTE_ATTACHMENT_TYPE = "\
+	SELECT \n\
+	ZICCLOUDSYNCINGOBJECT.ZTYPEUTI, \n\
+	ZICCLOUDSYNCINGOBJECT.ZIDENTIFIER \n\
+	FROM \n\
+	ZICCLOUDSYNCINGOBJECT \n\
+	WHERE \n\
+	ZICCLOUDSYNCINGOBJECT.Z_PK = ? \n\
+	LIMIT 1;";
 	
 	const char *SQL_GET_NOTE_ATTACHMENT = "\
-SELECT \n\
+	SELECT \n\
 	ZICCLOUDSYNCINGOBJECT.ZIDENTIFIER, \n\
 	ZICCLOUDSYNCINGOBJECT.ZFILENAME \n\
-FROM \n\
+	FROM \n\
 	ZICCLOUDSYNCINGOBJECT, \n\
 	ZICCLOUDSYNCINGOBJECT AS A \n\
-WHERE \n\
+	WHERE \n\
 	A.Z_PK = ? \n\
-AND \n\
+	AND \n\
 	ZICCLOUDSYNCINGOBJECT.Z_PK = A.ZMEDIA;";
+	
+	const char *SQL_GET_NOTE_ATTACHMENT_PREVIEW = "\
+	SELECT \n\
+	ZICCLOUDSYNCINGOBJECT.ZIDENTIFIER, \n\
+	ZICCLOUDSYNCINGOBJECT.ZORIENTATION \n\
+	FROM \n\
+	ZICCLOUDSYNCINGOBJECT, \n\
+	ZICCLOUDSYNCINGOBJECT AS A \n\
+	WHERE \n\
+	A.Z_PK = ? \n\
+	AND \n\
+	ZICCLOUDSYNCINGOBJECT.ZIDENTIFIER LIKE A.ZIDENTIFIER || '%';";
 	
 	//scpt
 	NSString *script =
@@ -261,10 +292,12 @@ AND \n\
 			NSURL *sqlParentURL = [groupContainerURL URLByAppendingPathComponent:@"group.com.apple.notes"];
 			NSURL *sqlURL = [sqlParentURL URLByAppendingPathComponent:@"NoteStore.sqlite"];
 			NSURL *mediaURL = [sqlParentURL URLByAppendingPathComponent:@"Media"];
+			NSURL *previewURL = [sqlParentURL URLByAppendingPathComponent:@"Previews"];
 			
 			path = [sqlURL path];
 			
 			mediaPath = [mediaURL path];
+			previewPath = [previewURL path];
 		}
 		sqlPath = path ? [path UTF8String] : NULL;
 	}
@@ -1247,25 +1280,63 @@ void Notes_Get_attachment(sLONG_PTR *pResult, PackagePtr pParams)
 			{
 				if(SQLITE_OK == sqlite3_open(Notes::sqlPath, &notesStore))
 				{
-					sqlite3_stmt *sql = NULL;
-					if(SQLITE_OK == sqlite3_prepare_v2(notesStore, Notes::SQL_GET_NOTE_ATTACHMENT, 1024, &sql, NULL))
+					CUTF8String attachment_id;
+					Param1.copyUTF8String(&attachment_id);
+					const char *PK = [Z_PK UTF8String];
+					
+					sqlite3_stmt *sql0 = NULL;
+					if(SQLITE_OK == sqlite3_prepare_v2(notesStore, Notes::SQL_GET_NOTE_ATTACHMENT_TYPE, 1024, &sql0, NULL))
 					{
-						CUTF8String attachment_id;
-						Param1.copyUTF8String(&attachment_id);
-						
-						const char *PK = [Z_PK UTF8String];
-						
-						sqlite3_bind_text(sql, 1, (const char *)PK, (int)strlen(PK), NULL);
-						
-						while(SQLITE_ROW == sqlite3_step(sql))
+						sqlite3_bind_text(sql0, 1, (const char *)PK, (int)strlen(PK), NULL);
+						NSString *media_type = nil;
+						while(SQLITE_ROW == sqlite3_step(sql0))
 						{
-							NSString *media_folder_id = [NSString stringWithUTF8String:(const char *)sqlite3_column_text(sql, 0)];
-							NSString *media_file_name = [NSString stringWithUTF8String:(const char *)sqlite3_column_text(sql, 1)];
-							if(media_folder_id && media_file_name)
+							media_type = SQL::toString(sqlite3_column_text(sql0, 0));
+						}
+						if([media_type isEqualToString:@"com.apple.notes.sketch"])
+						{
+							sqlite3_stmt *sql2 = NULL;
+							if(SQLITE_OK == sqlite3_prepare_v2(notesStore, Notes::SQL_GET_NOTE_ATTACHMENT_PREVIEW, 1024, &sql2, NULL))
 							{
-								NSString *mediaFolderPath = [Notes::mediaPath stringByAppendingPathComponent:media_folder_id];
-								NSString *mediaPath = [mediaFolderPath stringByAppendingPathComponent:media_file_name];
-								returnValue.setPath(mediaPath);
+								sqlite3_bind_text(sql2, 1, (const char *)PK, (int)strlen(PK), NULL);
+								bool with_orientation = NO;
+								while(SQLITE_ROW == sqlite3_step(sql2))
+								{
+									NSString *preview_id = SQL::toString(sqlite3_column_text(sql2, 0));
+									NSString *preview_orientation = SQL::toString(sqlite3_column_text(sql2, 1));
+									if([preview_orientation isEqualToString:@"2"])
+									{
+										with_orientation = YES;
+									}
+									NSString *previewPath = [Notes::previewPath stringByAppendingPathComponent:preview_id];
+									if(with_orientation)
+									{
+										NSString *mediaPath = [previewPath stringByAppendingString:@"-oriented.png"];
+										returnValue.setPath(mediaPath);
+									}else
+									{
+										NSString *mediaPath = [previewPath stringByAppendingString:@".png"];
+										returnValue.setPath(mediaPath);
+									}
+								}
+							}
+						}else
+						{
+							sqlite3_stmt *sql1 = NULL;
+							if(SQLITE_OK == sqlite3_prepare_v2(notesStore, Notes::SQL_GET_NOTE_ATTACHMENT, 1024, &sql1, NULL))
+							{
+								sqlite3_bind_text(sql1, 1, (const char *)PK, (int)strlen(PK), NULL);
+								while(SQLITE_ROW == sqlite3_step(sql1))
+								{
+									NSString *media_folder_id = SQL::toString(sqlite3_column_text(sql1, 0));
+									NSString *media_file_name = SQL::toString(sqlite3_column_text(sql1, 1));
+									if([media_folder_id length] && [media_file_name length])
+									{
+										NSString *mediaFolderPath = [Notes::mediaPath stringByAppendingPathComponent:media_folder_id];
+										NSString *mediaPath = [mediaFolderPath stringByAppendingPathComponent:media_file_name];
+										returnValue.setPath(mediaPath);
+									}
+								}
 							}
 						}
 					}

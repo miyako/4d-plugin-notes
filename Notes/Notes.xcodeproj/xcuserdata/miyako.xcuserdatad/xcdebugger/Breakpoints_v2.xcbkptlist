@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "4DPlugin.cpp"
-            timestampString = "526375959.717422"
+            timestampString = "526399896.43736"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1308"
-            endingLineNumber = "1308">
+            startingLineNumber = "1377"
+            endingLineNumber = "1377">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
