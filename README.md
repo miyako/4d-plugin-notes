@@ -154,6 +154,7 @@ note|TEXT|JSON object
 
 Properties of ``note``:
 
+* ``id``:``string``
 * ``title``:``string``
 * ``body``:``string``
 * ``folder``:``string`` (id)
