@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "Notes::getFolder(C_TEXT&amp;):4DPlugin.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "C_TEXT::copyUTF16String():C_TEXT.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "json_conv(wchar_t*):4DPlugin.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "json_set_text(void*, wchar_t const*, C_TEXT&amp;):4DPlugin.cpp">
+      </ContextState>
+      <ContextState
+         contextName = "Notes::_getFolder(void*):4DPlugin.cpp">
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>

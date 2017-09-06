@@ -47,8 +47,9 @@ typedef enum NotesSaveableFileFormat NotesSaveableFileFormat;
 @interface NotesApplication : SBApplication
 
 //- (SBElementArray<NotesDocument *> *) documents;
-- (SBElementArray *) documents;
 //- (SBElementArray<NotesWindow *> *) windows;
+
+- (SBElementArray *) documents;
 - (SBElementArray *) windows;
 
 @property (copy, readonly) NSString *name;  // The name of the application.
@@ -101,12 +102,12 @@ typedef enum NotesSaveableFileFormat NotesSaveableFileFormat;
 @interface NotesApplication (NotesSuite)
 
 //- (SBElementArray<NotesAccount *> *) accounts;
-- (SBElementArray *) accounts;
 //- (SBElementArray<NotesFolder *> *) folders;
-- (SBElementArray *) folders;
 //- (SBElementArray<NotesNote *> *) notes;
-- (SBElementArray *) notes;
 //- (SBElementArray<NotesAttachment *> *) attachments;
+- (SBElementArray *) accounts;
+- (SBElementArray *) folders;
+- (SBElementArray *) notes;
 - (SBElementArray *) attachments;
 
 @end
@@ -127,8 +128,8 @@ typedef enum NotesSaveableFileFormat NotesSaveableFileFormat;
 @interface NotesFolder : SBObject <NotesGenericMethods>
 
 //- (SBElementArray<NotesFolder *> *) folders;
-- (SBElementArray *) folders;
 //- (SBElementArray<NotesNote *> *) notes;
+- (SBElementArray *) folders;
 - (SBElementArray *) notes;
 
 @property (copy) NSString *name;  // the name of the folder
