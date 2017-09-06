@@ -37,7 +37,7 @@ note|TEXT|JSON object
 Properties of ``note``:
 
 * ``id``:``string``
-* ``title``:``string``
+* ``name``:``string``
 * ``body``:``string``
 * ``creationDate``:``string``
 * ``creationLocalDate``:``string``
@@ -155,7 +155,7 @@ note|TEXT|JSON object
 Properties of ``note``:
 
 * ``id``:``string``
-* ``title``:``string``
+* ``name``:``string``
 * ``body``:``string``
 * ``folder``:``string`` (id)
 * ``creationDate``:``string``
