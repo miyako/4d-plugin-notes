@@ -26,7 +26,7 @@ The following methods are not implemented (does nothing) in this version
 ## Syntax
 
 ```
-note:=Notes Create note (folder;title;body;attachments;names)
+note:=Notes Create note (folder;title;body;attachments)
 ```
 
 Parameter|Type|Description
@@ -34,8 +34,7 @@ Parameter|Type|Description
 folder|TEXT|
 title|TEXT|
 body|TEXT|
-attachments|ARRAY BLOB|
-names|ARRAY TEXT|
+attachments|ARRAY PICTURE|
 note|TEXT|JSON object
 
 Properties of ``note``:
