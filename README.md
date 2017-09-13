@@ -12,6 +12,10 @@ Interact with the Notes app on macOS
 
 <img src="https://cloud.githubusercontent.com/assets/1725068/18940649/21945000-8645-11e6-86ed-4a0f800e5a73.png" width="32" height="32" /> <img src="https://cloud.githubusercontent.com/assets/1725068/18940648/2192ddba-8645-11e6-864d-6d5692d55717.png" width="32" height="32" />
 
+## Important 
+
+Please use the ``v11`` (old ``RSR`` architecture) version on v15. ``ARRAY BLOB`` is not passed in compiled mode with the new (``manifest.json`` architecture).
+
 ## Remarks 
 
 The following methods are not implemented (does nothing) in this version
