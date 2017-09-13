@@ -14,7 +14,7 @@ Interact with the Notes app on macOS
 
 ## Important 
 
-Please use the ``v11`` (old ``RSR`` architecture) version on v15. ``ARRAY BLOB`` is not passed in compiled mode with the new (``manifest.json`` architecture).
+Please use the ``v11`` (old ``RSR`` architecture) version on v15. ``ARRAY BLOB`` is not passed in compiled mode (new ``manifest.json`` architecture).
 
 ## Remarks 
 
