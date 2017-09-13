@@ -1,0 +1,6 @@
+*** Full Backup
+Creating archive : Macintosh HD:Users:miyako:Desktop:notes-v3:v11:Notes.4dbase:Notes[0002].4BK
+Scheduled 2/12/31 9:18
+Starting 2017/09/13 15:54
+Ending 2017/09/13 15:54
+

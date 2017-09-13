@@ -50,12 +50,17 @@
 		D14D83FD1A0E5EBF00AEAB07 /* ARRAY_REAL.h in Headers */ = {isa = PBXBuildFile; fileRef = D14D83F11A0E5EBF00AEAB07 /* ARRAY_REAL.h */; };
 		D14D83FE1A0E5EBF00AEAB07 /* ARRAY_TEXT.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D14D83F21A0E5EBF00AEAB07 /* ARRAY_TEXT.cpp */; };
 		D14D83FF1A0E5EBF00AEAB07 /* ARRAY_TEXT.h in Headers */ = {isa = PBXBuildFile; fileRef = D14D83F31A0E5EBF00AEAB07 /* ARRAY_TEXT.h */; };
-		D176169C1B4FD0BC000FEC42 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D176169B1B4FD0BC000FEC42 /* Info.plist */; };
+		D18C0AD11F69008A00FD6C79 /* Notes.h in Headers */ = {isa = PBXBuildFile; fileRef = D18C0AD01F69008A00FD6C79 /* Notes.h */; };
+		D18C0AD41F6901F600FD6C79 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = D18C0AD31F6901F600FD6C79 /* libsqlite3.dylib */; };
+		D18C0AD61F6901FD00FD6C79 /* ScriptingBridge.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D18C0AD51F6901FD00FD6C79 /* ScriptingBridge.framework */; };
+		D18C0AD91F69025700FD6C79 /* libjson.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D18C0AD81F69025700FD6C79 /* libjson.a */; };
+		D18C0ADD1F69029200FD6C79 /* libjson_methods.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D18C0ADB1F69029200FD6C79 /* libjson_methods.cpp */; };
+		D18C0ADE1F69029200FD6C79 /* libjson_methods.h in Headers */ = {isa = PBXBuildFile; fileRef = D18C0ADC1F69029200FD6C79 /* libjson_methods.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		08EA7FFBFE8413EDC02AAC07 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
-		189286350695AD8900B05D6E /* 4D Plugin.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Notes.bundle"; sourceTree = BUILT_PRODUCTS_DIR; };
+		189286350695AD8900B05D6E /* Notes.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Notes.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		18B684EE06944F2000CC6A1E /* 4DPluginAPI.c */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 30; path = 4DPluginAPI.c; sourceTree = "<group>"; };
 		18B684F006944F2000CC6A1E /* 4DPluginAPI.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = 4DPluginAPI.h; sourceTree = "<group>"; };
 		18B684F106944F2000CC6A1E /* EntryPoints.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = EntryPoints.h; sourceTree = "<group>"; };
@@ -99,6 +104,12 @@
 		D14D83F21A0E5EBF00AEAB07 /* ARRAY_TEXT.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; name = ARRAY_TEXT.cpp; path = "../../4D Plugin API/Classes/ARRAY_TEXT.cpp"; sourceTree = "<group>"; };
 		D14D83F31A0E5EBF00AEAB07 /* ARRAY_TEXT.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ARRAY_TEXT.h; path = "../../4D Plugin API/Classes/ARRAY_TEXT.h"; sourceTree = "<group>"; };
 		D176169B1B4FD0BC000FEC42 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../Info.plist; sourceTree = "<group>"; };
+		D18C0AD01F69008A00FD6C79 /* Notes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Notes.h; path = ../Notes.h; sourceTree = "<group>"; };
+		D18C0AD31F6901F600FD6C79 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		D18C0AD51F6901FD00FD6C79 /* ScriptingBridge.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ScriptingBridge.framework; path = System/Library/Frameworks/ScriptingBridge.framework; sourceTree = SDKROOT; };
+		D18C0AD81F69025700FD6C79 /* libjson.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libjson.a; sourceTree = "<group>"; };
+		D18C0ADB1F69029200FD6C79 /* libjson_methods.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; fileEncoding = 4; path = libjson_methods.cpp; sourceTree = "<group>"; };
+		D18C0ADC1F69029200FD6C79 /* libjson_methods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libjson_methods.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,6 +117,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D18C0AD41F6901F600FD6C79 /* libsqlite3.dylib in Frameworks */,
+				D18C0AD91F69025700FD6C79 /* libjson.a in Frameworks */,
+				D18C0AD61F6901FD00FD6C79 /* ScriptingBridge.framework in Frameworks */,
 				8D01CCCE0486CAD60068D4B7 /* Carbon.framework in Frameworks */,
 				D130064F12F02D9700702C0E /* Cocoa.framework in Frameworks */,
 			);
@@ -114,15 +128,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		089C166AFE841209C02AAC07 /* 4D Plugin */ = {
+		089C166AFE841209C02AAC07 /* Notes */ = {
 			isa = PBXGroup;
 			children = (
+				D18C0ADA1F69029200FD6C79 /* libjson */,
+				D18C0AD01F69008A00FD6C79 /* Notes.h */,
+				D18C0AD71F69025700FD6C79 /* a */,
 				08FB77ADFE841716C02AAC07 /* Source */,
 				089C167CFE841241C02AAC07 /* Resources */,
 				089C1671FE841209C02AAC07 /* External Frameworks and Libraries */,
 				189286360695AD8900B05D6E /* Products */,
+				D18C0AD21F6901F600FD6C79 /* Frameworks */,
 			);
-			name = "Notes";
+			name = Notes;
 			sourceTree = "<group>";
 		};
 		089C1671FE841209C02AAC07 /* External Frameworks and Libraries */ = {
@@ -158,7 +176,7 @@
 		189286360695AD8900B05D6E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				189286350695AD8900B05D6E /* 4D Plugin.bundle */,
+				189286350695AD8900B05D6E /* Notes.bundle */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -221,6 +239,33 @@
 			name = ARRAY;
 			sourceTree = "<group>";
 		};
+		D18C0AD21F6901F600FD6C79 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				D18C0AD51F6901FD00FD6C79 /* ScriptingBridge.framework */,
+				D18C0AD31F6901F600FD6C79 /* libsqlite3.dylib */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D18C0AD71F69025700FD6C79 /* a */ = {
+			isa = PBXGroup;
+			children = (
+				D18C0AD81F69025700FD6C79 /* libjson.a */,
+			);
+			path = a;
+			sourceTree = "<group>";
+		};
+		D18C0ADA1F69029200FD6C79 /* libjson */ = {
+			isa = PBXGroup;
+			children = (
+				D18C0ADB1F69029200FD6C79 /* libjson_methods.cpp */,
+				D18C0ADC1F69029200FD6C79 /* libjson_methods.h */,
+			);
+			name = libjson;
+			path = ../libjson;
+			sourceTree = "<group>";
+		};
 		D19CC171135378140004336E /* Classes */ = {
 			isa = PBXGroup;
 			children = (
@@ -242,6 +287,7 @@
 				D14D83D81A0E5D3100AEAB07 /* C_LONGINT.h in Headers */,
 				D14D83F71A0E5EBF00AEAB07 /* ARRAY_DATE.h in Headers */,
 				18B684F706944F2000CC6A1E /* 4DPluginAPI.h in Headers */,
+				D18C0AD11F69008A00FD6C79 /* Notes.h in Headers */,
 				D14D83D21A0E5D3100AEAB07 /* C_BLOB.h in Headers */,
 				D14D83DA1A0E5D3100AEAB07 /* C_PICTURE.h in Headers */,
 				D14D83DE1A0E5D3100AEAB07 /* C_REAL.h in Headers */,
@@ -255,6 +301,7 @@
 				18B684F906944F2000CC6A1E /* Flags.h in Headers */,
 				D14D83FB1A0E5EBF00AEAB07 /* ARRAY_LONGINT.h in Headers */,
 				18B684FA06944F2000CC6A1E /* PrivateTypes.h in Headers */,
+				D18C0ADE1F69029200FD6C79 /* libjson_methods.h in Headers */,
 				D14D83E01A0E5D3100AEAB07 /* C_TEXT.h in Headers */,
 				D14D83D41A0E5D3100AEAB07 /* C_DATE.h in Headers */,
 				D14D83F91A0E5EBF00AEAB07 /* ARRAY_INTEGER.h in Headers */,
@@ -265,9 +312,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		8D01CCC60486CAD60068D4B7 /* 4D Plugin */ = {
+		8D01CCC60486CAD60068D4B7 /* Notes */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 42D60B3F0A9DDBC8002ABB42 /* Build configuration list for PBXNativeTarget "4D Plugin" */;
+			buildConfigurationList = 42D60B3F0A9DDBC8002ABB42 /* Build configuration list for PBXNativeTarget "Notes" */;
 			buildPhases = (
 				8D01CCC70486CAD60068D4B7 /* Headers */,
 				8D01CCC90486CAD60068D4B7 /* Resources */,
@@ -279,10 +326,10 @@
 			);
 			dependencies = (
 			);
-			name = "Notes";
+			name = Notes;
 			productInstallPath = "$(HOME)/Library/Bundles";
-			productName = "Notes";
-			productReference = 189286350695AD8900B05D6E /* 4D Plugin.bundle */;
+			productName = Notes;
+			productReference = 189286350695AD8900B05D6E /* Notes.bundle */;
 			productType = "com.apple.product-type.bundle";
 		};
 /* End PBXNativeTarget section */
@@ -291,9 +338,9 @@
 		089C1669FE841209C02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0700;
+				LastUpgradeCheck = 0820;
 			};
-			buildConfigurationList = 42D60B430A9DDBC8002ABB42 /* Build configuration list for PBXProject "4D Plugin" */;
+			buildConfigurationList = 42D60B430A9DDBC8002ABB42 /* Build configuration list for PBXProject "Notes" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
@@ -303,12 +350,12 @@
 				French,
 				German,
 			);
-			mainGroup = 089C166AFE841209C02AAC07 /* 4D Plugin */;
+			mainGroup = 089C166AFE841209C02AAC07 /* Notes */;
 			productRefGroup = 189286360695AD8900B05D6E /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				8D01CCC60486CAD60068D4B7 /* 4D Plugin */,
+				8D01CCC60486CAD60068D4B7 /* Notes */,
 			);
 		};
 /* End PBXProject section */
@@ -318,7 +365,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D176169C1B4FD0BC000FEC42 /* Info.plist in Resources */,
 				D14D83BA1A0E5C0F00AEAB07 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -347,6 +393,7 @@
 				D14D83D11A0E5D3100AEAB07 /* C_BLOB.cpp in Sources */,
 				D14D83DD1A0E5D3100AEAB07 /* C_REAL.cpp in Sources */,
 				D14D83FA1A0E5EBF00AEAB07 /* ARRAY_LONGINT.cpp in Sources */,
+				D18C0ADD1F69029200FD6C79 /* libjson_methods.cpp in Sources */,
 				D14D83F81A0E5EBF00AEAB07 /* ARRAY_INTEGER.cpp in Sources */,
 				D14D83D31A0E5D3100AEAB07 /* C_DATE.cpp in Sources */,
 				D14D83D91A0E5D3100AEAB07 /* C_PICTURE.cpp in Sources */,
@@ -398,13 +445,15 @@
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = ../Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
-				LIBRARY_SEARCH_PATHS = "";
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/a";
 				LIBRARY_STYLE = Bundle;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = "Notes";
+				PRODUCT_BUNDLE_IDENTIFIER = com.4D.4DPlugin.notes;
+				PRODUCT_NAME = Notes;
 				SECTORDER_FLAGS = "";
+				USER_HEADER_SEARCH_PATHS = ../include/libjson;
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",
@@ -434,13 +483,15 @@
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = ../Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
-				LIBRARY_SEARCH_PATHS = "";
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/a";
 				LIBRARY_STYLE = Bundle;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = "Notes";
+				PRODUCT_BUNDLE_IDENTIFIER = com.4D.4DPlugin.notes;
+				PRODUCT_NAME = Notes;
 				SECTORDER_FLAGS = "";
+				USER_HEADER_SEARCH_PATHS = ../include/libjson;
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",
@@ -468,13 +519,15 @@
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = ../Info.plist;
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
-				LIBRARY_SEARCH_PATHS = "";
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/a";
 				LIBRARY_STYLE = Bundle;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = "Notes";
+				PRODUCT_BUNDLE_IDENTIFIER = com.4D.4DPlugin.notes;
+				PRODUCT_NAME = Notes;
 				SECTORDER_FLAGS = "";
+				USER_HEADER_SEARCH_PATHS = ../include/libjson;
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",
@@ -490,12 +543,14 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)";
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = NDEBUG;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_VERSION = 4.0;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				OBJROOT = "$(SRCROOT)/build";
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx10.8;
 				SYMROOT = "$(SRCROOT)/$(PRODUCT_NAME).4dbase/Plugins";
+				USER_HEADER_SEARCH_PATHS = "../include/libjson ../libjson";
 			};
 			name = Development;
 		};
@@ -505,12 +560,14 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)";
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = NDEBUG;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_VERSION = 4.0;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				OBJROOT = "$(SRCROOT)/build";
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx10.8;
 				SYMROOT = "$(SRCROOT)/$(PRODUCT_NAME).4dbase/Plugins";
+				USER_HEADER_SEARCH_PATHS = "../include/libjson ../libjson";
 			};
 			name = Deployment;
 		};
@@ -519,18 +576,20 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
+				GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS = NDEBUG;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_VERSION = 4.0;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
-				SDKROOT = macosx10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				SDKROOT = macosx10.8;
 				SYMROOT = "$(SRCROOT)/$(PRODUCT_NAME).4dbase/Plugins";
+				USER_HEADER_SEARCH_PATHS = "../include/libjson ../libjson";
 			};
 			name = Default;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		42D60B3F0A9DDBC8002ABB42 /* Build configuration list for PBXNativeTarget "4D Plugin" */ = {
+		42D60B3F0A9DDBC8002ABB42 /* Build configuration list for PBXNativeTarget "Notes" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				42D60B400A9DDBC8002ABB42 /* Development */,
@@ -540,7 +599,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Default;
 		};
-		42D60B430A9DDBC8002ABB42 /* Build configuration list for PBXProject "4D Plugin" */ = {
+		42D60B430A9DDBC8002ABB42 /* Build configuration list for PBXProject "Notes" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				42D60B440A9DDBC8002ABB42 /* Development */,
