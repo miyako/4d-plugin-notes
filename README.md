@@ -14,7 +14,7 @@ Interact with the Notes app on macOS
 
 ## Important 
 
-Please use the ``v11`` (old ``RSR`` architecture) version on v15. ``ARRAY BLOB`` is not passed in compiled mode (new ``manifest.json`` architecture).
+The param ``attachments`` is now ``ARRAY PICTURE`` not ``ARRAY BLOB``. This is because in compiled mode, v15, 4D ignores ``ARRAY BLOB`` passed to a plugin command based on the new ``manifest.json`` architecture.
 
 ## Remarks 
 
