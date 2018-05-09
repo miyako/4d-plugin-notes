@@ -434,38 +434,42 @@ namespace Notes
 	
 	void getNotes(ARRAY_TEXT &names)
 	{
+		names.setSize(1);
+		
 		JSONNODE *json = json_new(JSON_NODE);
 		JSONNODE *notes_array = json_new(JSON_ARRAY);
 		
-		SBElementArray *notes = [Notes::Application notes];
-		NSArray *noteNames = [notes valueForKey:@"name"];
-		NSArray *noteIds = [notes valueForKey:@"id"];
-		
-		names.setSize(1);
-		
-		for(NSUInteger i = 0; i < [noteIds count]; ++i)
+		@autoreleasepool
 		{
-			JSONNODE *item = json_new(JSON_NODE);
-			
-			NSString *noteName = [noteNames objectAtIndex:i];
-			NSString *noteId = [noteIds objectAtIndex:i];
-			
-			json_set_text(item, L"name", noteName);
-			json_set_text(item, L"id", noteId);
-			
-			NotesNote *note = [notes objectAtIndex:i];
-			
-			JSONNODE *attachments_array = json_new(JSON_ARRAY);
-			NSArray *attachmentIds = [[note attachments]arrayByApplyingSelector:@selector(id)];
-			for(NSUInteger j = 0; j < [attachmentIds count]; ++j)
+			SBElementArray *notes = [Notes::Application notes];
+			NSArray *noteNames = [notes arrayByApplyingSelector:@selector(name)];
+			NSArray *noteIds = [notes arrayByApplyingSelector:@selector(id)];
+
+			for(NSUInteger i = 0; i < [noteNames count]; ++i)
 			{
-				json_set_text(attachments_array, [attachmentIds objectAtIndex:j]);
+				JSONNODE *item = json_new(JSON_NODE);
+				
+				NSString *noteName = [noteNames objectAtIndex:i];
+				NSString *noteId = [noteIds objectAtIndex:i];
+				
+				json_set_text(item, L"name", noteName);
+				json_set_text(item, L"id", noteId);
+				
+				NotesNote *note = [notes objectAtIndex:i];
+				
+				JSONNODE *attachments_array = json_new(JSON_ARRAY);
+				NSArray *attachmentIds = [[note attachments]arrayByApplyingSelector:@selector(id)];
+				for(NSUInteger j = 0; j < [attachmentIds count]; ++j)
+				{
+					json_set_text(attachments_array, [attachmentIds objectAtIndex:j]);
+				}
+				json_set_name(attachments_array, L"attachments");
+				json_push_back(item, attachments_array);
+				
+				json_push_back(notes_array, item);
+				names.appendUTF16String(noteName);
 			}
-			json_set_name(attachments_array, L"attachments");
-			json_push_back(item, attachments_array);
 			
-			json_push_back(notes_array, item);
-			names.appendUTF16String(noteName);
 		}
 		
 		json_set_name(notes_array, L"notes");
@@ -480,47 +484,50 @@ namespace Notes
 	
 	void getFolders(ARRAY_TEXT &names)
 	{
+		names.setSize(1);
+		
 		JSONNODE *json = json_new(JSON_NODE);
 		JSONNODE *folders_array = json_new(JSON_ARRAY);
 		
-		SBElementArray *folders = [Notes::Application folders];
-		NSArray *folderNames = [folders valueForKey:@"name"];
-		NSArray *folderIds = [folders valueForKey:@"id"];
-		
-		names.setSize(1);
-		
-		for(NSUInteger i = 0; i < [folderIds count]; ++i)
+		@autoreleasepool
 		{
-			JSONNODE *item = json_new(JSON_NODE);
+			SBElementArray *folders = [Notes::Application folders];
+			NSArray *folderNames = [folders arrayByApplyingSelector:@selector(name)];
+			NSArray *folderIds = [folders arrayByApplyingSelector:@selector(id)];
 			
-			NSString *folderName = [folderNames objectAtIndex:i];
-			NSString *folderId = [folderIds objectAtIndex:i];
-			
-			json_set_text(item, L"name", folderName);
-			json_set_text(item, L"id", folderId);
-			
-			NotesFolder *folder = [folders objectAtIndex:i];
-			
-			JSONNODE *notes_array = json_new(JSON_ARRAY);
-			NSArray *noteIds = [[folder notes]arrayByApplyingSelector:@selector(id)];
-			for(NSUInteger j = 0; j < [noteIds count]; ++j)
+			for(NSUInteger i = 0; i < [folderNames count]; ++i)
 			{
-				json_set_text(notes_array, [noteIds objectAtIndex:j]);
+				JSONNODE *item = json_new(JSON_NODE);
+				
+				NSString *folderName = [folderNames objectAtIndex:i];
+				NSString *folderId = [folderIds objectAtIndex:i];
+				
+				json_set_text(item, L"name", folderName);
+				json_set_text(item, L"id", folderId);
+				
+				NotesFolder *folder = [folders objectAtIndex:i];
+				
+				JSONNODE *notes_array = json_new(JSON_ARRAY);
+				NSArray *noteIds = [[folder notes]arrayByApplyingSelector:@selector(id)];
+				for(NSUInteger j = 0; j < [noteIds count]; ++j)
+				{
+					json_set_text(notes_array, [noteIds objectAtIndex:j]);
+				}
+				json_set_name(notes_array, L"notes");
+				json_push_back(item, notes_array);
+				
+				JSONNODE *subfolders_array = json_new(JSON_ARRAY);
+				NSArray *subfolderIds = [[folder folders]arrayByApplyingSelector:@selector(id)];
+				for(NSUInteger j = 0; j < [subfolderIds count]; ++j)
+				{
+					json_set_text(subfolders_array, [subfolderIds objectAtIndex:j]);
+				}
+				json_set_name(subfolders_array, L"folders");
+				json_push_back(item, subfolders_array);
+				
+				json_push_back(folders_array, item);
+				names.appendUTF16String(folderName);
 			}
-			json_set_name(notes_array, L"notes");
-			json_push_back(item, notes_array);
-			
-			JSONNODE *subfolders_array = json_new(JSON_ARRAY);
-			NSArray *subfolderIds = [[folder folders]arrayByApplyingSelector:@selector(id)];
-			for(NSUInteger j = 0; j < [subfolderIds count]; ++j)
-			{
-				json_set_text(subfolders_array, [subfolderIds objectAtIndex:j]);
-			}
-			json_set_name(subfolders_array, L"folders");
-			json_push_back(item, subfolders_array);
-			
-			json_push_back(folders_array, item);
-			names.appendUTF16String(folderName);
 		}
 		
 		json_set_name(folders_array, L"folders");
@@ -535,38 +542,41 @@ namespace Notes
 	
 	void getAccounts(ARRAY_TEXT &names)
 	{
+		names.setSize(1);
+		
 		JSONNODE *json = json_new(JSON_NODE);
 		JSONNODE *accounts_array = json_new(JSON_ARRAY);
 		
-		SBElementArray *accounts = [Notes::Application accounts];
-		NSArray *accountNames = [accounts valueForKey:@"name"];
-		NSArray *accountIds = [accounts valueForKey:@"id"];
-		
-		names.setSize(1);
-		
-		for(NSUInteger i = 0; i < [accountIds count]; ++i)
+		@autoreleasepool
 		{
-			JSONNODE *item = json_new(JSON_NODE);
+			SBElementArray *accounts = [Notes::Application accounts];
+			NSArray *accountNames = [accounts arrayByApplyingSelector:@selector(name)];
+			NSArray *accountIds = [accounts arrayByApplyingSelector:@selector(id)];
 			
-			NSString *accountName = [accountNames objectAtIndex:i];
-			NSString *accountId = [accountIds objectAtIndex:i];
-			
-			json_set_text(item, L"name", accountName);
-			json_set_text(item, L"id", accountId);
-			
-			NotesAccount *account = [accounts objectAtIndex:i];
-			
-			JSONNODE *folders_array = json_new(JSON_ARRAY);
-			NSArray *folderIds = [[account folders]arrayByApplyingSelector:@selector(id)];
-			for(NSUInteger j = 0; j < [folderIds count]; ++j)
+			for(NSUInteger i = 0; i < [accountNames count]; ++i)
 			{
-				json_set_text(folders_array, [folderIds objectAtIndex:j]);
+				JSONNODE *item = json_new(JSON_NODE);
+				
+				NSString *accountName = [accountNames objectAtIndex:i];
+				NSString *accountId = [accountIds objectAtIndex:i];
+				
+				json_set_text(item, L"name", accountName);
+				json_set_text(item, L"id", accountId);
+				
+				NotesAccount *account = [accounts objectAtIndex:i];
+				
+				JSONNODE *folders_array = json_new(JSON_ARRAY);
+				NSArray *folderIds = [[account folders]arrayByApplyingSelector:@selector(id)];
+				for(NSUInteger j = 0; j < [folderIds count]; ++j)
+				{
+					json_set_text(folders_array, [folderIds objectAtIndex:j]);
+				}
+				json_set_name(folders_array, L"folders");
+				json_push_back(item, folders_array);
+				
+				json_push_back(accounts_array, item);
+				names.appendUTF16String(accountName);
 			}
-			json_set_name(folders_array, L"folders");
-			json_push_back(item, folders_array);
-			
-			json_push_back(accounts_array, item);
-			names.appendUTF16String(accountName);
 		}
 		
 		json_set_name(accounts_array, L"accounts");
@@ -581,32 +591,31 @@ namespace Notes
 	
 	void getAttachments(ARRAY_TEXT &names)
 	{
+		names.setSize(1);
+		
 		JSONNODE *json = json_new(JSON_NODE);
 		JSONNODE *attachments_array = json_new(JSON_ARRAY);
 		
-		SBElementArray *attachments = [Notes::Application attachments];
-		NSArray *attachmentNames = [attachments valueForKey:@"name"];
-		NSArray *attachmentIds = [attachments valueForKey:@"id"];
-		
-		names.setSize(1);
-		
-		for(NSUInteger i = 0; i < [attachmentIds count]; ++i)
+		@autoreleasepool
 		{
-			JSONNODE *item = json_new(JSON_NODE);
+			SBElementArray *attachments = [Notes::Application attachments];
+			NSArray *attachmentNames = [attachments arrayByApplyingSelector:@selector(name)];
+			NSArray *attachmentIds = [attachments arrayByApplyingSelector:@selector(id)];
 			
-			NSString *attachmentName = [attachmentNames objectAtIndex:i];
-			NSString *attachmentId = [attachmentIds objectAtIndex:i];
-			
-			json_set_text(item, L"name", attachmentName);
-			json_set_text(item, L"id", attachmentId);
-			
-			NotesAttachment *attachment = [attachments objectAtIndex:i];
-			json_set_text(item, L"note", attachment.id);
-			
-			json_push_back(attachments_array, item);
-			names.appendUTF16String(attachmentName);
+			for(NSUInteger i = 0; i < [attachments count]; ++i)
+			{
+				JSONNODE *item = json_new(JSON_NODE);
+				NSString *attachmentName = [attachmentNames objectAtIndex:i];
+				NSString *attachmentId = [attachmentIds objectAtIndex:i];
+				json_set_text(item, L"name", attachmentName);
+				json_set_text(item, L"id", attachmentId);
+				NotesAttachment *attachment = [attachments objectAtIndex:i];
+				json_set_text(item, L"note", attachment.id);
+				json_push_back(attachments_array, item);
+				names.appendUTF16String(attachmentName);
+			}
 		}
-		
+
 		json_set_name(attachments_array, L"attachments");
 		json_push_back(json, attachments_array);
 		
