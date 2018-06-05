@@ -14,7 +14,11 @@ Interact with the Notes app on macOS
 
 ## Important 
 
-The param ``attachments`` is now ``ARRAY PICTURE`` not ``ARRAY BLOB``. This is because in compiled mode, v15, 4D ignores ``ARRAY BLOB`` passed to a plugin command based on the new ``manifest.json`` architecture.
+~~The param ``attachments`` is now ``ARRAY PICTURE`` not ``ARRAY BLOB``. This is because in compiled mode, v15, 4D ignores ``ARRAY BLOB`` passed to a plugin command based on the new ``manifest.json`` architecture.~~
+
+``ACI0097800`` is fixed in ``15.219852`` (``15.6``)
+
+
 
 ## Remarks 
 
