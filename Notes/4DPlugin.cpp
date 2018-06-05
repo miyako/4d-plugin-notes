@@ -8,7 +8,6 @@
  #
  # --------------------------------------------------------------------------------*/
 
-
 #include "4DPluginAPI.h"
 #include "4DPlugin.h"
 
@@ -75,7 +74,8 @@ namespace Notes
 	
 	NSString *mediaPath = nil;
 	NSString *previewPath = nil;
-	
+    NSString *fallbackImagesPath = nil;
+    
 	const char *SQL_GET_NOTE_ATTACHMENT_TYPE = "\
 	SELECT \n\
 	ZICCLOUDSYNCINGOBJECT.ZTYPEUTI, \n\
@@ -110,22 +110,6 @@ namespace Notes
 	AND \n\
 	ZICCLOUDSYNCINGOBJECT.ZIDENTIFIER LIKE A.ZIDENTIFIER || '%';";
 	
-	//scpt
-	NSString *script =
-	@"on add_attachment(note_id, attachment_path) \n\
-	tell application \"Notes\" \n\
-	set the_note to note id note_id \n\
-	set the_attachment to make new attachment at the_note with data attachment_path \n\
-	end tell \n\
-	end add_attachment";
-	
-	bool isScriptCompiled = NO;
-	
-	NSAppleScript *scriptObject = nil;
-	
-	//  this doesn't work...
-	//	NSBundle *Bundle = [NSBundle bundleWithIdentifier:NOTES_APP_ID];
-	
 	void sql_find_file()
 	{
 		NSString *path = nil;
@@ -144,26 +128,25 @@ namespace Notes
 			NSURL *sqlURL = [sqlParentURL URLByAppendingPathComponent:@"NoteStore.sqlite"];
 			NSURL *mediaURL = [sqlParentURL URLByAppendingPathComponent:@"Media"];
 			NSURL *previewURL = [sqlParentURL URLByAppendingPathComponent:@"Previews"];
-			
+			NSURL *fallbackImagesURL = [sqlParentURL URLByAppendingPathComponent:@"FallbackImages"];
+            
 			path = [sqlURL path];
 			
 			mediaPath = [mediaURL path];
 			previewPath = [previewURL path];
+            fallbackImagesPath = [fallbackImagesURL path];
 		}
 		sqlPath = path ? [path UTF8String] : NULL;
 	}
 	
 	void setup()
 	{
-		scriptObject = [[NSAppleScript alloc]initWithSource:script];
-		isScriptCompiled = [scriptObject compileAndReturnError:nil];
-		
 		sql_find_file();
 	}
 	
 	void clear()
 	{
-		[scriptObject release];
+
 	}
 	
 #pragma mark UUID
@@ -344,10 +327,31 @@ namespace Notes
 		
 	}
 	
+	void doScript(NSAppleEventDescriptor *event)
+	{
+		//scpt
+		NSString *script =
+		@"on add_attachment(note_id, attachment_path) \n\
+		tell application \"Notes\" \n\
+		set the_note to note id note_id \n\
+		set the_attachment to make new attachment at the_note with data attachment_path \n\
+		end tell \n\
+		end add_attachment";
+		
+		NSAppleScript *scriptObject = [[NSAppleScript alloc]initWithSource:script];
+		
+		if([scriptObject compileAndReturnError:nil])
+		{
+			[scriptObject executeAppleEvent:event error:nil];
+		}
+		[scriptObject release];
+	}
+	
 #pragma mark Public
 	
 	void addAttachment(NotesNote *note, NSData *data, NSString *name)
 	{
+		
 		NSArray *URLs = [[NSFileManager defaultManager]
 										 URLsForDirectory:NSLibraryDirectory
 										 inDomains:NSUserDomainMask];
@@ -364,67 +368,71 @@ namespace Notes
 			if([[NSFileManager defaultManager]createDirectoryAtURL:uniqueDirectory
 																 withIntermediateDirectories:YES attributes:nil error:nil])
 			{
-				if([data writeToURL:dstPath atomically:NO])
+				if([data writeToURL:dstPath atomically:YES])
 				{
-					
-					/*
+					if(false)
+					{
 					 NSString *script = [[NSString alloc]initWithFormat:
-					 @"tell application \"%@\" \n\
-					 set %@ to note id \"%@\" \n\
-					 set %@ to make new attachment at %@ with data \"%@\" \n\
-					 end tell",
-					 @"Notes",
-					 @"the_note", note.id,
-					 @"the_attachment", @"the_note", [dstPath path]];
+															 @"tell application \"%@\" \n\
+															 set %@ to note id \"%@\" \n\
+															 set %@ to make new attachment at %@ with data \"%@\" \n\
+															 end tell",
+															 @"Notes",
+															 @"the_note", note.id,
+															 @"the_attachment", @"the_note", [dstPath path]];
 					 
 					 NSLog(@"%@", script);
 					 
 					 NSAppleScript *scriptObject = [[NSAppleScript alloc]initWithSource:script];
-					 
+						
 					 if([scriptObject compileAndReturnError:nil])
 					 {
-						NSAppleEventDescriptor *returnValue = [scriptObject executeAndReturnError:nil];
-						NSLog(@"%@", returnValue);
+						 NSAppleEventDescriptor *returnValue = [scriptObject executeAndReturnError:nil];
+						 NSLog(@"%@", returnValue);
 					 }
+						
 					 [scriptObject release];
 					 [script release];
-					 */
-					
-					NSAppleEventDescriptor *parameters = [NSAppleEventDescriptor listDescriptor];
-					NSAppleEventDescriptor *param_note_id = [NSAppleEventDescriptor descriptorWithString:note.id];
-					[parameters insertDescriptor:param_note_id atIndex:1];
-					NSAppleEventDescriptor *param_attachment_path = [NSAppleEventDescriptor descriptorWithString:[dstPath path]];
-					[parameters insertDescriptor:param_attachment_path atIndex:2];
-					
-					ProcessSerialNumber psn = {0, kCurrentProcess};
-					NSAppleEventDescriptor *target =
-					[NSAppleEventDescriptor
-					 descriptorWithDescriptorType:typeProcessSerialNumber
-					 bytes:&psn
-					 length:sizeof(ProcessSerialNumber)];
-					
-					NSAppleEventDescriptor *handler = [NSAppleEventDescriptor descriptorWithString:@"add_attachment"];
-					
-					NSAppleEventDescriptor *event =
-					[NSAppleEventDescriptor appleEventWithEventClass:kASAppleScriptSuite
-																									 eventID:kASSubroutineEvent
-																					targetDescriptor:target
-																									returnID:kAutoGenerateReturnID
-																						 transactionID:kAnyTransactionID];
-					
-					[event setParamDescriptor:handler forKeyword:keyASSubroutineName];
-					[event setParamDescriptor:parameters forKeyword:keyDirectObject];
-					
-					if(isScriptCompiled)
-					{
-						[scriptObject executeAppleEvent:event error:nil];
 					}
 					
+					if(true)
+					{
+						NSAppleEventDescriptor *parameters = [NSAppleEventDescriptor listDescriptor];
+						NSAppleEventDescriptor *param_note_id = [NSAppleEventDescriptor descriptorWithString:note.id];
+						[parameters insertDescriptor:param_note_id atIndex:1];
+						NSAppleEventDescriptor *param_attachment_path = [NSAppleEventDescriptor descriptorWithString:[dstPath path]];
+						[parameters insertDescriptor:param_attachment_path atIndex:2];
+						
+						ProcessSerialNumber psn = {0, kCurrentProcess};
+						NSAppleEventDescriptor *target =
+						[NSAppleEventDescriptor
+						 descriptorWithDescriptorType:typeProcessSerialNumber
+						 bytes:&psn
+						 length:sizeof(ProcessSerialNumber)];
+						
+						NSAppleEventDescriptor *handler = [NSAppleEventDescriptor descriptorWithString:@"add_attachment"];
+						
+						NSAppleEventDescriptor *event =
+						[NSAppleEventDescriptor appleEventWithEventClass:kASAppleScriptSuite
+																										 eventID:kASSubroutineEvent
+																						targetDescriptor:target
+																										returnID:kAutoGenerateReturnID
+																							 transactionID:kAnyTransactionID];
+						
+						[event setParamDescriptor:handler forKeyword:keyASSubroutineName];
+						[event setParamDescriptor:parameters forKeyword:keyDirectObject];
+						
+						PA_RunInMainProcess((PA_RunInMainProcessProcPtr)doScript, event);
+
+					}
+				
 					//cleanup
-					if([[NSFileManager defaultManager]removeItemAtPath:[dstPath path] error:nil])
-					{
+					/*
+					 if([[NSFileManager defaultManager]removeItemAtPath:[dstPath path] error:nil])
+					 {
 						[[NSFileManager defaultManager]removeItemAtPath:[uniqueDirectory path] error:nil];
-					}
+					 }
+					 */
 				}
 			}
 		}
@@ -829,12 +837,14 @@ namespace Notes
 					PA_Picture p = PA_GetPictureInArray(attachments, i);
 					if(p)
 					{
+
 						CGImageRef cgImage = (CGImageRef)PA_CreateNativePictureForScreen(p);
 						NSImage *nsImage = [[NSImage alloc]initWithCGImage:cgImage size:NSZeroSize];
-						@autoreleasepool
-						{
-							addAttachment(note, [nsImage TIFFRepresentation], [NSString stringWithFormat:@"%@.tiff", uuidString()]);
-						}
+						NSData *data = [nsImage TIFFRepresentation];
+						NSString *name = [uuidString() stringByAppendingString:@".tiff"];
+
+						addAttachment(note, data, name);
+
 						[nsImage release];
 						CFRelease(cgImage);
 					}//p
@@ -1133,6 +1143,35 @@ void Notes_Get_attachment(sLONG_PTR *pResult, PackagePtr pParams)
 						{
 							media_type = SQL::toString(sqlite3_column_text(sql0, 0));
 						}
+                        if([media_type isEqualToString:@"com.apple.drawing"])
+                        {
+                            sqlite3_stmt *sql2 = NULL;
+                            if(SQLITE_OK == sqlite3_prepare_v2(notesStore, Notes::SQL_GET_NOTE_ATTACHMENT_PREVIEW, 1024, &sql2, NULL))
+                            {
+                                sqlite3_bind_text(sql2, 1, (const char *)PK, (int)strlen(PK), NULL);
+                                bool with_orientation = NO;
+                                while(SQLITE_ROW == sqlite3_step(sql2))
+                                {
+                                    NSString *preview_id = SQL::toString(sqlite3_column_text(sql2, 0));
+                                    NSString *preview_orientation = SQL::toString(sqlite3_column_text(sql2, 1));
+//                                    if([preview_orientation isEqualToString:@"2"])
+//                                    {
+//                                        with_orientation = YES;
+//                                    }
+                                    NSString *fallbackImagesPath = [Notes::fallbackImagesPath stringByAppendingPathComponent:preview_id];
+//                                    if(with_orientation)
+//                                    {
+//                                        NSString *mediaPath = [fallbackImagesPath stringByAppendingString:@".jpg"];
+//                                        returnValue.setPath(mediaPath);
+//                                    }else
+//                                    {
+                                        NSString *mediaPath = [fallbackImagesPath stringByAppendingString:@".jpg"];
+                                        returnValue.setPath(mediaPath);
+//                                    }
+                                }
+                            }
+                        }/* com.apple.drawing */
+                        else
 						if([media_type isEqualToString:@"com.apple.notes.sketch"])
 						{
 							sqlite3_stmt *sql2 = NULL;
@@ -1160,7 +1199,8 @@ void Notes_Get_attachment(sLONG_PTR *pResult, PackagePtr pParams)
 									}
 								}
 							}
-						}else
+						}/* com.apple.notes.sketch */
+                        else
 						{
 							sqlite3_stmt *sql1 = NULL;
 							if(SQLITE_OK == sqlite3_prepare_v2(notesStore, Notes::SQL_GET_NOTE_ATTACHMENT, 1024, &sql1, NULL))
