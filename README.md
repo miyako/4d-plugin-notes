@@ -18,7 +18,13 @@ Interact with the Notes app on macOS
 
 ``ACI0097800`` is fixed in ``15.219852`` (``15.6``)
 
+### Releases
 
+[2.3](https://github.com/miyako/4d-plugin-notes/releases/tag/2.3)
+
+* Call AppleScript in main process (was causing instability)
+
+* Fetch ``com.apple.drawing`` from ``FallbackImages``
 
 ## Remarks 
 
