@@ -110,6 +110,52 @@ namespace Notes
 	AND \n\
 	ZICCLOUDSYNCINGOBJECT.ZIDENTIFIER LIKE A.ZIDENTIFIER || '%';";
 	
+#ifndef errAEEventWouldRequireUserConsent
+    enum {
+        errAEEventWouldRequireUserConsent     =     -1744
+    };
+#endif
+    
+    void requestPermission(){
+        
+        if (@available(macOS 10.14, *)) {
+            OSStatus status;
+            
+            /*
+             alternatively
+             NSAppleEventDescriptor *targetAppEventDescriptor;
+             targetAppEventDescriptor = [NSAppleEventDescriptor descriptorWithBundleIdentifier:@"com.apple.Notes"];
+             and pass targetAppEventDescriptor.aeDesc to AEDeterminePermissionToAutomateTarget()
+             */
+            
+            AEAddressDesc addressDesc;
+            NSString *bundleIdentifier = @"com.apple.Notes";
+            const char *bundleIdentifierCString = [bundleIdentifier cStringUsingEncoding:NSUTF8StringEncoding];
+            if(AECreateDesc(typeApplicationBundleID, bundleIdentifierCString, strlen(bundleIdentifierCString), &addressDesc) == noErr)
+            {
+                status = AEDeterminePermissionToAutomateTarget(&addressDesc, typeWildCard, typeWildCard, true);
+                AEDisposeDesc(&addressDesc);
+                
+                switch (status) {
+                    case errAEEventWouldRequireUserConsent:
+                    NSLog(@"Automation permission pending for %@", bundleIdentifier);
+                    break;
+                    case noErr:
+                    NSLog(@"Automation permission granted for %@", bundleIdentifier);
+                    break;
+                    case errAEEventNotPermitted:
+                    NSLog(@"Automation permission denied for %@", bundleIdentifier);
+                    break;
+                    case procNotFound:
+                    NSLog(@"Automation permission unknown for %@", bundleIdentifier);
+                    break;
+                    default:
+                    break;
+                }
+            }
+        }
+    }
+    
 	void sql_find_file()
 	{
 		NSString *path = nil;
@@ -160,6 +206,8 @@ namespace Notes
 	
 	NotesNote *_getNote(JSONNODE *json)
 	{
+        requestPermission();
+        
 		NotesNote *note = nil;
 		
 		SBElementArray *notes = [Notes::Application notes];
@@ -191,6 +239,8 @@ namespace Notes
 	
 	NotesFolder *_getFolder(JSONNODE *json)
 	{
+        requestPermission();
+        
 		NotesFolder *folder = nil;
 		
 		SBElementArray *folders = [Notes::Application folders];
@@ -222,6 +272,8 @@ namespace Notes
 	
 	NotesAccount *_getAccount(JSONNODE *json)
 	{
+        requestPermission();
+        
 		NotesAccount *account = nil;
 		
 		SBElementArray *accounts = [Notes::Application accounts];
@@ -250,34 +302,11 @@ namespace Notes
 		
 		return account;
 	}
-	
-	/*
-	 void _getFolders(JSONNODE *json)
-	 {
-		JSONNODE *folders_array = json_new(JSON_ARRAY);
 		
-		SBElementArray *folders = [Notes::Application folders];
-		NSArray *folderNames = [folders valueForKey:@"name"];
-		NSArray *folderIds = [folders valueForKey:@"id"];
-		for(NSUInteger i = 0; i < [folderIds count]; ++i)
-		{
-	 JSONNODE *item = json_new(JSON_NODE);
-	 
-	 NSString *folderName = NSLocalizedStringFromTableInBundle([folderNames objectAtIndex:i], nil, bundle, nil);
-	 NSString *folderId = [folderIds objectAtIndex:i];
-	 
-	 json_set_text(item, L"name", folderName);
-	 json_set_text(item, L"id", folderId);
-	 
-	 json_push_back(folders_array, item);
-		}
-		json_set_name(folders_array, L"folders");
-		json_push_back(json, folders_array);
-	 }
-	 */
-	
 	void _getFolder(JSONNODE *n, NotesFolder *folder)
 	{
+        requestPermission();
+        
 		JSONNODE *json = json_new(JSON_NODE);
 		json_set_text(json, L"name", folder.name);
 		json_set_text(json, L"id", folder.id);
@@ -442,6 +471,8 @@ namespace Notes
 	
 	void getNotes(ARRAY_TEXT &names)
 	{
+        requestPermission();
+        
 		names.setSize(1);
 		
 		JSONNODE *json = json_new(JSON_NODE);
@@ -492,6 +523,8 @@ namespace Notes
 	
 	void getFolders(ARRAY_TEXT &names)
 	{
+        requestPermission();
+        
 		names.setSize(1);
 		
 		JSONNODE *json = json_new(JSON_NODE);
@@ -550,6 +583,8 @@ namespace Notes
 	
 	void getAccounts(ARRAY_TEXT &names)
 	{
+        requestPermission();
+        
 		names.setSize(1);
 		
 		JSONNODE *json = json_new(JSON_NODE);
@@ -558,6 +593,8 @@ namespace Notes
 		@autoreleasepool
 		{
 			SBElementArray *accounts = [Notes::Application accounts];
+            NSLog(@"%d", [accounts count]);
+            
 			NSArray *accountNames = [accounts arrayByApplyingSelector:@selector(name)];
 			NSArray *accountIds = [accounts arrayByApplyingSelector:@selector(id)];
 			
@@ -599,6 +636,8 @@ namespace Notes
 	
 	void getAttachments(ARRAY_TEXT &names)
 	{
+        requestPermission();
+        
 		names.setSize(1);
 		
 		JSONNODE *json = json_new(JSON_NODE);
@@ -868,7 +907,6 @@ namespace Notes
 		result.setReturn(pResult);
 	}
 }
-
 
 #pragma mark -
 

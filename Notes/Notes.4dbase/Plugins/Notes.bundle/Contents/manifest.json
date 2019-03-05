@@ -1,1 +1,66 @@
-﻿{"name":"Notes","id":20000,"commands":[{"theme":"Notes","syntax":"Notes Create note(&T;&T;&T;&Y;&Y):T"},{"theme":"Notes","syntax":"Notes GET FOLDERS(&Y)"},{"theme":"Notes","syntax":"Notes GET NOTES(&Y)"},{"theme":"Notes","syntax":"Notes GET ATTACHMENTS(&Y)"},{"theme":"Notes","syntax":"Notes GET ACCOUNTS(&Y)"},{"theme":"Notes","syntax":"Notes Create folder(&T;&T):T"},{"theme":"Notes","syntax":"Notes SET NOTIFICATION(&T)"},{"theme":"Notes","syntax":"Notes Get notification:T"},{"theme":"Notes","syntax":"Notes Get attachment(&T):T"},{"theme":"Notes","syntax":"Notes Get note(&T):T"},{"theme":"Notes","syntax":"Notes Get folder(&T):T"},{"theme":"Notes","syntax":"Notes Get account(&T):T"}]}
+{
+	"name": "Notes",
+	"id": 20000,
+	"commands": [
+		{
+			"theme": "Notes",
+			"syntax": "Notes Create note(&T;&T;&T;&Y;&Y):T",
+			"threadSafe": false
+		},
+		{
+			"theme": "Notes",
+			"syntax": "Notes GET FOLDERS(&Y)",
+			"threadSafe": false
+		},
+		{
+			"theme": "Notes",
+			"syntax": "Notes GET NOTES(&Y)",
+			"threadSafe": false
+		},
+		{
+			"theme": "Notes",
+			"syntax": "Notes GET ATTACHMENTS(&Y)",
+			"threadSafe": false
+		},
+		{
+			"theme": "Notes",
+			"syntax": "Notes GET ACCOUNTS(&Y)",
+			"threadSafe": false
+		},
+		{
+			"theme": "Notes",
+			"syntax": "Notes Create folder(&T;&T):T",
+			"threadSafe": false
+		},
+		{
+			"theme": "Notes",
+			"syntax": "Notes SET NOTIFICATION(&T)",
+			"threadSafe": false
+		},
+		{
+			"theme": "Notes",
+			"syntax": "Notes Get notification:T",
+			"threadSafe": false
+		},
+		{
+			"theme": "Notes",
+			"syntax": "Notes Get attachment(&T):T",
+			"threadSafe": false
+		},
+		{
+			"theme": "Notes",
+			"syntax": "Notes Get note(&T):T",
+			"threadSafe": false
+		},
+		{
+			"theme": "Notes",
+			"syntax": "Notes Get folder(&T):T",
+			"threadSafe": false
+		},
+		{
+			"theme": "Notes",
+			"syntax": "Notes Get account(&T):T",
+			"threadSafe": false
+		}
+	]
+}
