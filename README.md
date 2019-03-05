@@ -6,7 +6,7 @@ Interact with the Notes app on macOS
 
 | carbon | cocoa | win32 | win64 |
 |:------:|:-----:|:---------:|:---------:|
-|<img src="https://cloud.githubusercontent.com/assets/1725068/22371562/1b091f0a-e4db-11e6-8458-8653954a7cce.png" width="24" height="24" />|<img src="https://cloud.githubusercontent.com/assets/1725068/22371562/1b091f0a-e4db-11e6-8458-8653954a7cce.png" width="24" height="24" />|||
+||<img src="https://cloud.githubusercontent.com/assets/1725068/22371562/1b091f0a-e4db-11e6-8458-8653954a7cce.png" width="24" height="24" />|||
 
 ### Version
 
@@ -16,12 +16,16 @@ Interact with the Notes app on macOS
 
 ### Releases
 
-## Remarks 
 
-The following methods are not implemented (does nothing) in this version
+## Important
 
-* ``Notes SET NOTIFICATION (method)``
-* ``method:=Notes Get notification``
+This version uses [``AEDeterminePermissionToAutomateTarget``](https://developer.apple.com/documentation/coreservices/3025784-aedeterminepermissiontoautomatet?language=objc) from the 10.14 SDK
+
+The main application must have the following keys in ``Info.plist``
+
+Key: Privacy - AppleEvents Sending Usage Description (``NSAppleEventsUsageDescription``)  
+
+Value: Reason to access private data
 
 ## Architecture
 
@@ -250,3 +254,10 @@ method:=Notes Get notification
 Parameter|Type|Description
 ------------|------------|----
 method|TEXT|
+
+## Remarks 
+
+The following methods are not implemented (does nothing) in this version
+
+* ``Notes SET NOTIFICATION (method)``
+* ``method:=Notes Get notification``
