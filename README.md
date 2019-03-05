@@ -6,55 +6,32 @@ Interact with the Notes app on macOS
 
 | carbon | cocoa | win32 | win64 |
 |:------:|:-----:|:---------:|:---------:|
-||<img src="https://cloud.githubusercontent.com/assets/1725068/22371562/1b091f0a-e4db-11e6-8458-8653954a7cce.png" width="24" height="24" />|||
+|<img src="https://cloud.githubusercontent.com/assets/1725068/22371562/1b091f0a-e4db-11e6-8458-8653954a7cce.png" width="24" height="24" />|<img src="https://cloud.githubusercontent.com/assets/1725068/22371562/1b091f0a-e4db-11e6-8458-8653954a7cce.png" width="24" height="24" />|||
 
 ### Version
 
-<img src="https://cloud.githubusercontent.com/assets/1725068/18940649/21945000-8645-11e6-86ed-4a0f800e5a73.png" width="32" height="32" /> <img src="https://cloud.githubusercontent.com/assets/1725068/18940648/2192ddba-8645-11e6-864d-6d5692d55717.png" width="32" height="32" /> <img src="https://user-images.githubusercontent.com/1725068/41266195-ddf767b2-6e30-11e8-9d6b-2adf6a9f57a5.png" width="32" height="32" />
+<img src="https://cloud.githubusercontent.com/assets/1725068/18940649/21945000-8645-11e6-86ed-4a0f800e5a73.png" width="32" height="32" /> <img src="https://cloud.githubusercontent.com/assets/1725068/18940648/2192ddba-8645-11e6-864d-6d5692d55717.png" width="32" height="32" />
 
-[before-mojave](https://github.com/miyako/4d-plugin-notes/tree/before-mojave) branch uses 10.13 SDK
+## Important 
+
+~~The param ``attachments`` is now ``ARRAY PICTURE`` not ``ARRAY BLOB``. This is because in compiled mode, v15, 4D ignores ``ARRAY BLOB`` passed to a plugin command based on the new ``manifest.json`` architecture.~~
+
+``ACI0097800`` is fixed in ``15.219852`` (``15.6``)
 
 ### Releases
 
-[3.0](https://github.com/miyako/4d-plugin-notes/releases/tag/3.0)
+[2.3](https://github.com/miyako/4d-plugin-notes/releases/tag/2.3)
 
-## Important
+* Call AppleScript in main process (was causing instability)
 
-This version uses [``AEDeterminePermissionToAutomateTarget``](https://developer.apple.com/documentation/coreservices/3025784-aedeterminepermissiontoautomatet?language=objc) from the 10.14 SDK
+* Fetch ``com.apple.drawing`` from ``FallbackImages``
 
-If access has been previously denied by user, the application will not ask again.
+## Remarks 
 
-The use must manually enable it.
+The following methods are not implemented (does nothing) in this version
 
-Alternatively, you can clear all permissions for Automation.
-
-```
-tccutil reset AppleEvents
-```
-
-before
-
-<img width="668" alt="2019-03-05 16 01 49" src="https://user-images.githubusercontent.com/1725068/53786763-084a2d00-3f60-11e9-8f6a-b75c88ddb5e9.png">
-
-after
-
-<img width="668" alt="2019-03-05 16 02 40" src="https://user-images.githubusercontent.com/1725068/53786792-1f891a80-3f60-11e9-8911-fab9d6c6466a.png">
-
-The main application must have the following keys in ``Info.plist``
-
-**Key**: Privacy - AppleEvents Sending Usage Description (``NSAppleEventsUsageDescription``)  
-
-**Value**: Reason to access private data
-
-If the entry does not exist, plugin calls will silently fail.
-
-<img width="765" alt="2019-03-05 16 06 08" src="https://user-images.githubusercontent.com/1725068/53787121-206e7c00-3f61-11e9-8801-9080083e5d4f.png">
-
-If the app is signed, you obviously have to sign it again after editing ``Info.plist``.  
-
-If the key exists, the system will ask the user for permission on the first attempt.
-
-<img width="420" alt="2019-03-05 16 09 11" src="https://user-images.githubusercontent.com/1725068/53787180-4d229380-3f61-11e9-8d38-d046e9107d55.png">
+* ``Notes SET NOTIFICATION (method)``
+* ``method:=Notes Get notification``
 
 ## Architecture
 
@@ -283,10 +260,3 @@ method:=Notes Get notification
 Parameter|Type|Description
 ------------|------------|----
 method|TEXT|
-
-## Remarks 
-
-The following methods are not implemented (does nothing) in this version
-
-* ``Notes SET NOTIFICATION (method)``
-* ``method:=Notes Get notification``
