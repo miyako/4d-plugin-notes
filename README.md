@@ -27,6 +27,24 @@ The main application must have the following keys in ``Info.plist``
 
 **Value**: Reason to access private data
 
+If access has been previously denied by user, the application will not ask again.
+
+The use must manually enable it.
+
+Alternatively, you can clear all permissions for Automation.
+
+```
+tccutil reset AppleEvents
+```
+
+before
+
+<img width="668" alt="2019-03-05 16 01 49" src="https://user-images.githubusercontent.com/1725068/53786763-084a2d00-3f60-11e9-8f6a-b75c88ddb5e9.png">
+
+after
+
+<img width="668" alt="2019-03-05 16 02 40" src="https://user-images.githubusercontent.com/1725068/53786792-1f891a80-3f60-11e9-8911-fab9d6c6466a.png">
+
 ## Architecture
 
 This plugin uses several different ways to access Notes. 
