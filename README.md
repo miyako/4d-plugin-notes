@@ -47,6 +47,14 @@ The main application must have the following keys in ``Info.plist``
 
 If the entry does not exist, plugin calls will silently fail.
 
+<img width="765" alt="2019-03-05 16 06 08" src="https://user-images.githubusercontent.com/1725068/53787121-206e7c00-3f61-11e9-8801-9080083e5d4f.png">
+
+If the app is signed, you obviously have to sign it again after editing ``Info.plist``.  
+
+If the key exists, the system will ask the user for permission on the first attempt.
+
+<img width="420" alt="2019-03-05 16 09 11" src="https://user-images.githubusercontent.com/1725068/53787180-4d229380-3f61-11e9-8d38-d046e9107d55.png">
+
 ## Architecture
 
 This plugin uses several different ways to access Notes. 
