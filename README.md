@@ -14,19 +14,7 @@ Interact with the Notes app on macOS
 
 [before-mojave](https://github.com/miyako/4d-plugin-notes/tree/before-mojave) branch uses 10.13 SDK
 
-## Important 
-
-~~The param ``attachments`` is now ``ARRAY PICTURE`` not ``ARRAY BLOB``. This is because in compiled mode, v15, 4D ignores ``ARRAY BLOB`` passed to a plugin command based on the new ``manifest.json`` architecture.~~
-
-``ACI0097800`` is fixed in ``15.219852`` (``15.6``)
-
 ### Releases
-
-[2.3](https://github.com/miyako/4d-plugin-notes/releases/tag/2.3)
-
-* Call AppleScript in main process (was causing instability)
-
-* Fetch ``com.apple.drawing`` from ``FallbackImages``
 
 ## Remarks 
 
