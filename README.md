@@ -23,9 +23,9 @@ This version uses [``AEDeterminePermissionToAutomateTarget``](https://developer.
 
 The main application must have the following keys in ``Info.plist``
 
-Key: Privacy - AppleEvents Sending Usage Description (``NSAppleEventsUsageDescription``)  
+**Key**: Privacy - AppleEvents Sending Usage Description (``NSAppleEventsUsageDescription``)  
 
-Value: Reason to access private data
+**Value**: Reason to access private data
 
 ## Architecture
 
