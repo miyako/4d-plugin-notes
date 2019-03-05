@@ -21,12 +21,6 @@ Interact with the Notes app on macOS
 
 This version uses [``AEDeterminePermissionToAutomateTarget``](https://developer.apple.com/documentation/coreservices/3025784-aedeterminepermissiontoautomatet?language=objc) from the 10.14 SDK
 
-The main application must have the following keys in ``Info.plist``
-
-**Key**: Privacy - AppleEvents Sending Usage Description (``NSAppleEventsUsageDescription``)  
-
-**Value**: Reason to access private data
-
 If access has been previously denied by user, the application will not ask again.
 
 The use must manually enable it.
@@ -44,6 +38,14 @@ before
 after
 
 <img width="668" alt="2019-03-05 16 02 40" src="https://user-images.githubusercontent.com/1725068/53786792-1f891a80-3f60-11e9-8911-fab9d6c6466a.png">
+
+The main application must have the following keys in ``Info.plist``
+
+**Key**: Privacy - AppleEvents Sending Usage Description (``NSAppleEventsUsageDescription``)  
+
+**Value**: Reason to access private data
+
+If the entry does not exist, plugin calls will silently fail.
 
 ## Architecture
 
