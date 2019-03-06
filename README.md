@@ -22,6 +22,8 @@ Interact with the Notes app on macOS
 
 This version uses [``AEDeterminePermissionToAutomateTarget``](https://developer.apple.com/documentation/coreservices/3025784-aedeterminepermissiontoautomatet?language=objc) from the 10.14 SDK
 
+c.f. https://www.felix-schwarz.org/blog/2018/08/new-apple-event-apis-in-macos-mojave
+
 If access has been previously denied by user, the application will not ask again.
 
 The use must manually enable it.
