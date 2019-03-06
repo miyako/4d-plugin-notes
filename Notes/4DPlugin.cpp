@@ -11,6 +11,52 @@
 #include "4DPluginAPI.h"
 #include "4DPlugin.h"
 
+#ifndef errAEEventWouldRequireUserConsent
+enum {
+    errAEEventWouldRequireUserConsent     =     -1744
+};
+#endif
+
+void requestPermission(){
+    
+    if (@available(macOS 10.14, *)) {
+        OSStatus status;
+        
+        /*
+         alternatively
+         NSAppleEventDescriptor *targetAppEventDescriptor;
+         targetAppEventDescriptor = [NSAppleEventDescriptor descriptorWithBundleIdentifier:@"com.apple.Notes"];
+         and pass targetAppEventDescriptor.aeDesc to AEDeterminePermissionToAutomateTarget()
+         */
+        
+        AEAddressDesc addressDesc;
+        NSString *bundleIdentifier = @"com.apple.Notes";
+        const char *bundleIdentifierCString = [bundleIdentifier cStringUsingEncoding:NSUTF8StringEncoding];
+        if(AECreateDesc(typeApplicationBundleID, bundleIdentifierCString, strlen(bundleIdentifierCString), &addressDesc) == noErr)
+        {
+            status = AEDeterminePermissionToAutomateTarget(&addressDesc, typeWildCard, typeWildCard, true);
+            AEDisposeDesc(&addressDesc);
+            
+            switch (status) {
+                case errAEEventWouldRequireUserConsent:
+                    NSLog(@"Automation permission pending for %@", bundleIdentifier);
+                    break;
+                case noErr:
+                    NSLog(@"Automation permission granted for %@", bundleIdentifier);
+                    break;
+                case errAEEventNotPermitted:
+                    NSLog(@"Automation permission denied for %@", bundleIdentifier);
+                    break;
+                case procNotFound:
+                    NSLog(@"Automation permission unknown for %@", bundleIdentifier);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+}
+
 #pragma mark DateFormatter
 
 namespace DateFormatter
@@ -109,52 +155,6 @@ namespace Notes
 	A.Z_PK = ? \n\
 	AND \n\
 	ZICCLOUDSYNCINGOBJECT.ZIDENTIFIER LIKE A.ZIDENTIFIER || '%';";
-	
-#ifndef errAEEventWouldRequireUserConsent
-    enum {
-        errAEEventWouldRequireUserConsent     =     -1744
-    };
-#endif
-    
-    void requestPermission(){
-        
-        if (@available(macOS 10.14, *)) {
-            OSStatus status;
-            
-            /*
-             alternatively
-             NSAppleEventDescriptor *targetAppEventDescriptor;
-             targetAppEventDescriptor = [NSAppleEventDescriptor descriptorWithBundleIdentifier:@"com.apple.Notes"];
-             and pass targetAppEventDescriptor.aeDesc to AEDeterminePermissionToAutomateTarget()
-             */
-            
-            AEAddressDesc addressDesc;
-            NSString *bundleIdentifier = @"com.apple.Notes";
-            const char *bundleIdentifierCString = [bundleIdentifier cStringUsingEncoding:NSUTF8StringEncoding];
-            if(AECreateDesc(typeApplicationBundleID, bundleIdentifierCString, strlen(bundleIdentifierCString), &addressDesc) == noErr)
-            {
-                status = AEDeterminePermissionToAutomateTarget(&addressDesc, typeWildCard, typeWildCard, true);
-                AEDisposeDesc(&addressDesc);
-                
-                switch (status) {
-                    case errAEEventWouldRequireUserConsent:
-                    NSLog(@"Automation permission pending for %@", bundleIdentifier);
-                    break;
-                    case noErr:
-                    NSLog(@"Automation permission granted for %@", bundleIdentifier);
-                    break;
-                    case errAEEventNotPermitted:
-                    NSLog(@"Automation permission denied for %@", bundleIdentifier);
-                    break;
-                    case procNotFound:
-                    NSLog(@"Automation permission unknown for %@", bundleIdentifier);
-                    break;
-                    default:
-                    break;
-                }
-            }
-        }
-    }
     
 	void sql_find_file()
 	{
@@ -206,8 +206,6 @@ namespace Notes
 	
 	NotesNote *_getNote(JSONNODE *json)
 	{
-        requestPermission();
-        
 		NotesNote *note = nil;
 		
 		SBElementArray *notes = [Notes::Application notes];
@@ -239,8 +237,6 @@ namespace Notes
 	
 	NotesFolder *_getFolder(JSONNODE *json)
 	{
-        requestPermission();
-        
 		NotesFolder *folder = nil;
 		
 		SBElementArray *folders = [Notes::Application folders];
@@ -272,8 +268,6 @@ namespace Notes
 	
 	NotesAccount *_getAccount(JSONNODE *json)
 	{
-        requestPermission();
-        
 		NotesAccount *account = nil;
 		
 		SBElementArray *accounts = [Notes::Application accounts];
@@ -305,8 +299,6 @@ namespace Notes
 		
 	void _getFolder(JSONNODE *n, NotesFolder *folder)
 	{
-        requestPermission();
-        
 		JSONNODE *json = json_new(JSON_NODE);
 		json_set_text(json, L"name", folder.name);
 		json_set_text(json, L"id", folder.id);
@@ -471,8 +463,6 @@ namespace Notes
 	
 	void getNotes(ARRAY_TEXT &names)
 	{
-        requestPermission();
-        
 		names.setSize(1);
 		
 		JSONNODE *json = json_new(JSON_NODE);
@@ -523,8 +513,6 @@ namespace Notes
 	
 	void getFolders(ARRAY_TEXT &names)
 	{
-        requestPermission();
-        
 		names.setSize(1);
 		
 		JSONNODE *json = json_new(JSON_NODE);
@@ -583,8 +571,6 @@ namespace Notes
 	
 	void getAccounts(ARRAY_TEXT &names)
 	{
-        requestPermission();
-        
 		names.setSize(1);
 		
 		JSONNODE *json = json_new(JSON_NODE);
@@ -636,8 +622,6 @@ namespace Notes
 	
 	void getAttachments(ARRAY_TEXT &names)
 	{
-        requestPermission();
-        
 		names.setSize(1);
 		
 		JSONNODE *json = json_new(JSON_NODE);
@@ -914,6 +898,8 @@ void OnStartup()
 {
 	DateFormatter::setup();
 	Notes::setup();
+    
+    requestPermission();
 }
 
 void OnExit()
