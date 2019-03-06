@@ -60,7 +60,7 @@ If the key exists, the system will ask the user for permission on the first atte
 
 You will also need to codesign the built app (with the ``--deep`` option, since some frameworks are unsigned).
 
-For that, you will have to ``xattr -rc`` and clean all files inside the app.
+To sign, you may have to ``xattr -rc`` and first clean all files inside the app.
 
 ## Architecture
 
