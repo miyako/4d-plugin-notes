@@ -24,6 +24,10 @@ This version uses [``AEDeterminePermissionToAutomateTarget``](https://developer.
 
 c.f. https://www.felix-schwarz.org/blog/2018/08/new-apple-event-apis-in-macos-mojave
 
+This tool may help sign your application
+
+[4d-utility-build-application](https://github.com/miyako/4d-utility-build-application)
+
 If access has been previously denied by user, the application will not ask again.
 
 The use must manually enable it.
