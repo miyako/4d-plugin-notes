@@ -24,6 +24,10 @@ This version uses [``AEDeterminePermissionToAutomateTarget``](https://developer.
 
 c.f. https://www.felix-schwarz.org/blog/2018/08/new-apple-event-apis-in-macos-mojave
 
+This tool may help sign your application
+
+[4d-utility-build-application](https://github.com/miyako/4d-utility-build-application)
+
 If access has been previously denied by user, the application will not ask again.
 
 The use must manually enable it.
@@ -57,6 +61,10 @@ If the app is signed, you obviously have to sign it again after editing ``Info.p
 If the key exists, the system will ask the user for permission on the first attempt.
 
 <img width="420" alt="2019-03-05 16 09 11" src="https://user-images.githubusercontent.com/1725068/53787180-4d229380-3f61-11e9-8d38-d046e9107d55.png">
+
+You will also need to codesign the built app (with the ``--deep`` option, since some frameworks are unsigned).
+
+To sign, you may have to ``xattr -rc`` and first clean all files inside the app.
 
 ## Architecture
 
