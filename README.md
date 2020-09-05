@@ -2,6 +2,25 @@
 
 Interact with the Notes app on macOS
 
+**Bug**: It is no longer possible to add an attachment in macOS Catalina.
+
+see:
+
+https://hookproductivity.com/help2/integration/hook-and-macos-10-15-catalina-notes-app/
+https://forum.latenightsw.com/t/notes-app-scripting-dictionary-defective-on-catalina/2136
+
+```applescript
+tell application "Notes"
+  note id "x-coredata://2BB27C30-9D8D-4501-8ADD-D16531CA22F5/ICNote/p51"
+  (*
+  returns:
+  show id "x-coredata://2BB27C30-9D8D-4501-8ADD-D16531CA22F5/ICNote/p51" of application "Notes"
+  it is not possible to use this as a specifier; bummer! (error 1700)
+  *)
+  
+end tell
+```
+
 ### Platform
 
 | carbon | cocoa | win32 | win64 |
@@ -10,13 +29,7 @@ Interact with the Notes app on macOS
 
 ### Version
 
-<img src="https://cloud.githubusercontent.com/assets/1725068/18940649/21945000-8645-11e6-86ed-4a0f800e5a73.png" width="32" height="32" /> <img src="https://cloud.githubusercontent.com/assets/1725068/18940648/2192ddba-8645-11e6-864d-6d5692d55717.png" width="32" height="32" /> <img src="https://user-images.githubusercontent.com/1725068/41266195-ddf767b2-6e30-11e8-9d6b-2adf6a9f57a5.png" width="32" height="32" />
-
-[before-mojave](https://github.com/miyako/4d-plugin-notes/tree/before-mojave) branch uses 10.13 SDK
-
-### Releases
-
-[3.0](https://github.com/miyako/4d-plugin-notes/releases/tag/3.0)
+<img width="32" height="32" src="https://user-images.githubusercontent.com/1725068/73986501-15964580-4981-11ea-9ac1-73c5cee50aae.png"> <img src="https://user-images.githubusercontent.com/1725068/73987971-db2ea780-4984-11ea-8ada-e25fb9c3cf4e.png" width="32" height="32" />
 
 ## Important
 
@@ -99,7 +112,7 @@ sqlite3 /Users/miyako/Library/Group\ Containers/group.com.apple.notes/NoteStore.
 ## Syntax
 
 ```
-note:=Notes Create note (folder;title;body;attachments)
+note:=Notes Create note (folder;title;body;attachments{;$names})
 ```
 
 Parameter|Type|Description
@@ -107,8 +120,9 @@ Parameter|Type|Description
 folder|TEXT|
 title|TEXT|
 body|TEXT|
-attachments|ARRAY PICTURE|
-note|TEXT|JSON object
+attachments|ARRAY PICTURE| or ARRAY BLOB
+names|ARRAY TEXT|
+note|OBJECT|
 
 Properties of ``note``:
 
@@ -126,7 +140,7 @@ Notes GET FOLDERS (folders)
 
 Parameter|Type|Description
 ------------|------------|----
-folders|ARRAY TEXT|names + JSON object in element ``0``
+folders|COLLECTION|
 
 Properties of ``folders``:
 
@@ -145,7 +159,7 @@ Notes GET NOTES (notes)
 
 Parameter|Type|Description
 ------------|------------|----
-notes|ARRAY TEXT|names + JSON object in element ``0``
+notes|COLLECTION|
 
 Properties of ``notes``:
 
@@ -163,7 +177,7 @@ Notes GET ATTACHMENTS (attachments)
 
 Parameter|Type|Description
 ------------|------------|----
-attachments|ARRAY TEXT|names + JSON object in element ``0``
+attachments|COLLECTION|
 
 Properties of ``attachments``:
 
@@ -181,7 +195,7 @@ Notes GET ACCOUNTS (accounts)
 
 Parameter|Type|Description
 ------------|------------|----
-accounts|ARRAY TEXT|names + JSON object in element ``0``
+accounts|COLLECTION|
 
 Properties of ``accounts``:
 
@@ -201,7 +215,7 @@ Parameter|Type|Description
 ------------|------------|----
 parent|TEXT|
 name|TEXT|
-folder|TEXT|JSON object
+folder|OBJECT|
 
 Properties of ``folder``:
 
@@ -226,7 +240,7 @@ note:=Notes Get note (id)
 Parameter|Type|Description
 ------------|------------|----
 id|TEXT|
-note|TEXT|JSON object
+note|OBJECT|
 
 Properties of ``note``:
 
@@ -247,7 +261,7 @@ folder:=Notes Get folder (id)
 Parameter|Type|Description
 ------------|------------|----
 id|TEXT|
-folder|TEXT|JSON object
+folder|OBJECT| 
 
 Properties of ``folder``:
 
@@ -268,7 +282,7 @@ account:=Notes Get account (id)
 Parameter|Type|Description
 ------------|------------|----
 id|TEXT|
-account|TEXT|
+account|OBJECT|
 
 Properties of ``account``:
 
