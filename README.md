@@ -2,6 +2,13 @@
 
 Interact with the Notes app on macOS
 
+**Bug**: It is not longer possible to add an attachment in macOS Catalina.
+
+see:
+
+https://hookproductivity.com/help2/integration/hook-and-macos-10-15-catalina-notes-app/
+https://forum.latenightsw.com/t/notes-app-scripting-dictionary-defective-on-catalina/2136
+
 ### Platform
 
 | carbon | cocoa | win32 | win64 |
