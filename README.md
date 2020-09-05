@@ -9,7 +9,7 @@ see:
 https://hookproductivity.com/help2/integration/hook-and-macos-10-15-catalina-notes-app/
 https://forum.latenightsw.com/t/notes-app-scripting-dictionary-defective-on-catalina/2136
 
-``applescript
+```applescript
 tell application "Notes"
   note id "x-coredata://2BB27C30-9D8D-4501-8ADD-D16531CA22F5/ICNote/p51"
   (*
