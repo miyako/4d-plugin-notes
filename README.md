@@ -99,7 +99,7 @@ sqlite3 /Users/miyako/Library/Group\ Containers/group.com.apple.notes/NoteStore.
 ## Syntax
 
 ```
-note:=Notes Create note (folder;title;body;attachments)
+note:=Notes Create note (folder;title;body;attachments{;$names})
 ```
 
 Parameter|Type|Description
@@ -107,8 +107,9 @@ Parameter|Type|Description
 folder|TEXT|
 title|TEXT|
 body|TEXT|
-attachments|ARRAY PICTURE|
-note|TEXT|JSON object
+attachments|ARRAY PICTURE| or ARRAY BLOB
+names|ARRAY TEXT|
+note|OBJECT|
 
 Properties of ``note``:
 
@@ -126,7 +127,7 @@ Notes GET FOLDERS (folders)
 
 Parameter|Type|Description
 ------------|------------|----
-folders|ARRAY TEXT|names + JSON object in element ``0``
+folders|COLLECTION|
 
 Properties of ``folders``:
 
@@ -145,7 +146,7 @@ Notes GET NOTES (notes)
 
 Parameter|Type|Description
 ------------|------------|----
-notes|ARRAY TEXT|names + JSON object in element ``0``
+notes|COLLECTION|
 
 Properties of ``notes``:
 
@@ -163,7 +164,7 @@ Notes GET ATTACHMENTS (attachments)
 
 Parameter|Type|Description
 ------------|------------|----
-attachments|ARRAY TEXT|names + JSON object in element ``0``
+attachments|COLLECTION|
 
 Properties of ``attachments``:
 
@@ -181,7 +182,7 @@ Notes GET ACCOUNTS (accounts)
 
 Parameter|Type|Description
 ------------|------------|----
-accounts|ARRAY TEXT|names + JSON object in element ``0``
+accounts|COLLECTION|
 
 Properties of ``accounts``:
 
@@ -201,7 +202,7 @@ Parameter|Type|Description
 ------------|------------|----
 parent|TEXT|
 name|TEXT|
-folder|TEXT|JSON object
+folder|OBJECT|
 
 Properties of ``folder``:
 
@@ -226,7 +227,7 @@ note:=Notes Get note (id)
 Parameter|Type|Description
 ------------|------------|----
 id|TEXT|
-note|TEXT|JSON object
+note|OBJECT|
 
 Properties of ``note``:
 
@@ -247,7 +248,7 @@ folder:=Notes Get folder (id)
 Parameter|Type|Description
 ------------|------------|----
 id|TEXT|
-folder|TEXT|JSON object
+folder|OBJECT| 
 
 Properties of ``folder``:
 
@@ -268,7 +269,7 @@ account:=Notes Get account (id)
 Parameter|Type|Description
 ------------|------------|----
 id|TEXT|
-account|TEXT|
+account|OBJECT|
 
 Properties of ``account``:
 
