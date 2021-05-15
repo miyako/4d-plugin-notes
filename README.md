@@ -2,6 +2,8 @@
 
 Interact with the Notes app on macOS
 
+See [4d-utility-sign-app](https://github.com/miyako/4d-utility-sign-app) on how to enable the plugin in 4D.
+
 **Bug**: It is no longer possible to add an attachment in macOS Catalina.
 
 see:
