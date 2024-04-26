@@ -39,5 +39,6 @@ void Notes_Get_attachment(PA_PluginParameters params);
 void Notes_Get_note(PA_PluginParameters params);
 void Notes_Get_folder(PA_PluginParameters params);
 void Notes_Get_account(PA_PluginParameters params);
+void Notes_SHOW(PA_PluginParameters params);
 
 #endif /* PLUGIN_NOTES_H */

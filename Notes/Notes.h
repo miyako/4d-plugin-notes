@@ -46,11 +46,8 @@ typedef enum NotesSaveableFileFormat NotesSaveableFileFormat;
 // The application's top-level scripting object.
 @interface NotesApplication : SBApplication
 
-//- (SBElementArray<NotesDocument *> *) documents;
-//- (SBElementArray<NotesWindow *> *) windows;
-
-- (SBElementArray *) documents;
-- (SBElementArray *) windows;
+- (SBElementArray<NotesDocument *> *) documents;
+- (SBElementArray<NotesWindow *> *) windows;
 
 @property (copy, readonly) NSString *name;  // The name of the application.
 @property (readonly) BOOL frontmost;  // Is this the active application?
@@ -60,6 +57,7 @@ typedef enum NotesSaveableFileFormat NotesSaveableFileFormat;
 - (void) print:(id)x withProperties:(NSDictionary *)withProperties printDialog:(BOOL)printDialog;  // Print a document.
 - (void) quitSaving:(NotesSaveOptions)saving;  // Quit the application.
 - (BOOL) exists:(id)x;  // Verify that an object exists.
+- (void) openNoteLocation:(NSString *)x;  // Open a note URL.
 
 @end
 
@@ -101,57 +99,62 @@ typedef enum NotesSaveableFileFormat NotesSaveableFileFormat;
 // the Notes application
 @interface NotesApplication (NotesSuite)
 
-//- (SBElementArray<NotesAccount *> *) accounts;
-//- (SBElementArray<NotesFolder *> *) folders;
-//- (SBElementArray<NotesNote *> *) notes;
-//- (SBElementArray<NotesAttachment *> *) attachments;
-- (SBElementArray *) accounts;
-- (SBElementArray *) folders;
-- (SBElementArray *) notes;
-- (SBElementArray *) attachments;
+- (SBElementArray<NotesAccount *> *) accounts;
+- (SBElementArray<NotesFolder *> *) folders;
+- (SBElementArray<NotesNote *> *) notes;
+- (SBElementArray<NotesAttachment *> *) attachments;
+
+@property (copy) NotesAccount *defaultAccount;  // the default account for creating notes
+@property (copy) NSArray<NotesNote *> *selection;  // the selected note(s)
 
 @end
 
 // a Notes account
 @interface NotesAccount : SBObject <NotesGenericMethods>
 
-//- (SBElementArray<NotesFolder *> *) folders;
-- (SBElementArray *) folders;
+- (SBElementArray<NotesFolder *> *) folders;
+- (SBElementArray<NotesNote *> *) notes;
 
+@property (copy) NotesFolder *defaultFolder;  // the default folder for creating notes
 @property (copy) NSString *name;  // the name of the account
+@property (readonly) BOOL upgraded;  // Is the account upgraded?
 - (NSString *) id;  // the unique identifier of the account
 
+- (id) showSeparately:(BOOL)separately;  // Show an object in the UI
 
 @end
 
 // a folder containing notes
 @interface NotesFolder : SBObject <NotesGenericMethods>
 
-//- (SBElementArray<NotesFolder *> *) folders;
-//- (SBElementArray<NotesNote *> *) notes;
-- (SBElementArray *) folders;
-- (SBElementArray *) notes;
+- (SBElementArray<NotesFolder *> *) folders;
+- (SBElementArray<NotesNote *> *) notes;
 
 @property (copy) NSString *name;  // the name of the folder
 - (NSString *) id;  // the unique identifier of the folder
+@property (readonly) BOOL shared;  // Is the folder shared?
 @property (copy, readonly) id container;  // the container of the folder
 
+- (id) showSeparately:(BOOL)separately;  // Show an object in the UI
 
 @end
 
 // a note in the Notes application
 @interface NotesNote : SBObject <NotesGenericMethods>
 
-//- (SBElementArray<NotesAttachment *> *) attachments;
-- (SBElementArray *) attachments;
+- (SBElementArray<NotesAttachment *> *) attachments;
 
 @property (copy) NSString *name;  // the name of the note (normally the first line of the body)
 - (NSString *) id;  // the unique identifier of the note
 @property (copy, readonly) NotesFolder *container;  // the folder of the note
 @property (copy) NSString *body;  // the HTML content of the note
+@property (copy, readonly) NSString *plaintext;  // the plaintext content of the note
 @property (copy, readonly) NSDate *creationDate;  // the creation date of the note
 @property (copy, readonly) NSDate *modificationDate;  // the modification date of the note
+@property (readonly) BOOL passwordProtected;  // Is the note password protected?
+@property (readonly) BOOL shared;  // Is the note shared?
 
+- (id) showSeparately:(BOOL)separately;  // Show an object in the UI
 
 @end
 
@@ -162,7 +165,12 @@ typedef enum NotesSaveableFileFormat NotesSaveableFileFormat;
 - (NSString *) id;  // the unique identifier of the attachment
 @property (copy, readonly) NotesNote *container;  // the note containing the attachment
 @property (copy, readonly) NSString *contentIdentifier;  // the content-id URL in the note's HTML
+@property (copy, readonly) NSDate *creationDate;  // the creation date of the attachment
+@property (copy, readonly) NSDate *modificationDate;  // the modification date of the attachment
+@property (copy, readonly) NSString *URL;  // for URL attachments, the URL the attachment represents
+@property (readonly) BOOL shared;  // Is the attachment shared?
 
+- (id) showSeparately:(BOOL)separately;  // Show an object in the UI
 
 @end
 

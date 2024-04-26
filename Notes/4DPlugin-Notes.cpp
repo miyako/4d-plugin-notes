@@ -10,11 +10,11 @@
 
 #include "4DPlugin-Notes.h"
 
-#ifndef errAEEventWouldRequireUserConsent
-enum {
-    errAEEventWouldRequireUserConsent     =     -1744
-};
-#endif
+//#ifndef errAEEventWouldRequireUserConsent
+//enum {
+//    errAEEventWouldRequireUserConsent     =     -1744
+//};
+//#endif
 
 void requestPermission(){
     
@@ -1153,6 +1153,7 @@ void PluginMain(PA_long32 selector, PA_PluginParameters params) {
             case kServerDeinitPlugin :
                 OnExit();
                 break;
+                
                 // --- Notes
                 
             case 1 :
@@ -1191,14 +1192,97 @@ void PluginMain(PA_long32 selector, PA_PluginParameters params) {
             case 12 :
                 Notes_Get_account(params);
                 break;
-                
+            case 13 :
+                Notes_SHOW(params);
+                break;
         }
-        
     }
     catch(...)
     {
         
     }
+}
+
+#pragma mark -
+
+static void AppleScript_Notes_SHOW_by_ID(NSAppleEventDescriptor *event) {
+    
+    NSString *script = \
+  @"on showNotes(note_content) \n\
+        tell application \"Notes\" \n\
+            set nn to notes whose id is note_content \n\
+            repeat with n in nn \n\
+                show n \n\
+            end repeat \n\
+        end tell \n\
+    end showNotes";
+        
+    NSAppleScript *scriptObject = [[NSAppleScript alloc]initWithSource:script];
+    
+    if([scriptObject compileAndReturnError:nil]) {
+        [scriptObject executeAppleEvent:event error:nil];
+    }
+    [scriptObject release];
+}
+
+static void AppleScript_Notes_SHOW(NSAppleEventDescriptor *event) {
+    
+    NSString *script = \
+  @"on showNotes(note_content) \n\
+        tell application \"Notes\" \n\
+            set nn to notes whose plaintext contains note_content \n\
+            repeat with n in nn \n\
+                show n \n\
+            end repeat \n\
+        end tell \n\
+    end showNotes";
+        
+    NSAppleScript *scriptObject = [[NSAppleScript alloc]initWithSource:script];
+    
+    if([scriptObject compileAndReturnError:nil]) {
+        [scriptObject executeAppleEvent:event error:nil];
+    }
+    [scriptObject release];
+}
+
+void Notes_SHOW(PA_PluginParameters params) {
+    
+    PackagePtr pParams = (PackagePtr)params->fParameters;
+    
+    C_TEXT _plainText;
+    _plainText.fromParamAtIndex(pParams, 1);
+    NSString *plainText = _plainText.copyUTF16String();
+        
+    NSAppleEventDescriptor *parameters = [NSAppleEventDescriptor listDescriptor];
+    NSAppleEventDescriptor *note_content = [NSAppleEventDescriptor descriptorWithString:plainText];
+    [parameters insertDescriptor:note_content atIndex:1];
+    
+    ProcessSerialNumber psn = {0, kCurrentProcess};
+    NSAppleEventDescriptor *target =
+    [NSAppleEventDescriptor
+     descriptorWithDescriptorType:typeProcessSerialNumber
+     bytes:&psn
+     length:sizeof(ProcessSerialNumber)];
+    
+    NSAppleEventDescriptor *handler = [NSAppleEventDescriptor descriptorWithString:@"showNotes"];
+    
+    NSAppleEventDescriptor *event =
+    [NSAppleEventDescriptor appleEventWithEventClass:kASAppleScriptSuite
+                                             eventID:kASSubroutineEvent
+                                    targetDescriptor:target
+                                            returnID:kAutoGenerateReturnID
+                                       transactionID:kAnyTransactionID];
+    
+    [event setParamDescriptor:handler forKeyword:keyASSubroutineName];
+    [event setParamDescriptor:parameters forKeyword:keyDirectObject];
+       
+    if([plainText hasPrefix:@"x-coredata://"]) {
+        AppleScript_Notes_SHOW_by_ID(event);
+    }else{
+        AppleScript_Notes_SHOW(event);
+    }
+    
+    [plainText release];
 }
 
 #pragma mark -

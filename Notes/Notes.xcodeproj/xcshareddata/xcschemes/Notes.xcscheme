@@ -42,8 +42,8 @@
       allowLocationSimulation = "YES">
       <PathRunnable
          runnableDebuggingMode = "0"
-         BundleIdentifier = "com.4d.4d"
-         FilePath = "/Applications/4D v18.2 HF2/4D.app">
+         BundleIdentifier = "com.4D.4D"
+         FilePath = "/Applications/4D v20 R3/4D.app">
       </PathRunnable>
    </LaunchAction>
    <ProfileAction

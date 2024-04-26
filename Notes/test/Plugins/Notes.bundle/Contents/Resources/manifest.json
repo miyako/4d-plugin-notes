@@ -61,6 +61,11 @@
             "theme": "Notes",
             "syntax": "Notes Get account(&T):J",
             "threadSafe": true
+        },
+        {
+            "theme": "Notes",
+            "syntax": "Notes SHOW(&T)",
+            "threadSafe": true
         }
     ]
 }
