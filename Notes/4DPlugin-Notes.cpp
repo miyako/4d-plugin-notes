@@ -721,6 +721,7 @@ PA_CollectionRef getAttachments()
             SBElementArray *attachments = [application attachments];
             NSArray *attachmentNames = [attachments arrayByApplyingSelector:@selector(name)];
             NSArray *attachmentIds = [attachments arrayByApplyingSelector:@selector(id)];
+            NSArray *attachmentNotes = [attachments arrayByApplyingSelector:@selector(container)];
             
             for(NSUInteger i = 0; i < [attachments count]; ++i)
             {
@@ -728,13 +729,11 @@ PA_CollectionRef getAttachments()
                 
                 NSString *attachmentName = [attachmentNames objectAtIndex:i];
                 NSString *attachmentId = [attachmentIds objectAtIndex:i];
+                NotesNote *note = [attachmentNotes objectAtIndex:i];
                 
                 ob_set_s(item, L"name", [attachmentName UTF8String]);
-                ob_set_s(item, L"id", [attachmentId UTF8String]);
-                
-                NotesAttachment *attachment = [attachments objectAtIndex:i];
-                
-                ob_set_s(item, L"note", [attachment.id UTF8String]);
+                ob_set_s(item, L"id", [attachmentId UTF8String]);                NotesNote *note = [attachmentNotes objectAtIndex:i];
+                ob_set_s(item, L"note", [note.id UTF8String]);
                 
                 PA_Variable v = PA_CreateVariable(eVK_Object);
                 PA_SetObjectVariable(&v, item);

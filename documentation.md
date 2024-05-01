@@ -142,7 +142,7 @@ attachments|COLLECTION|collection of `attachment`
 	{
 		"name": "image.png",
 		"id": "x-coredata://5E8616AB-4594-4644-8F88-CE7880A4E33D/ICAttachment/p23",
-		"note": "x-coredata://5E8616AB-4594-4644-8F88-CE7880A4E33D/ICAttachment/p23"
+		"note": "x-coredata://5E8616AB-4594-4644-8F88-CE7880A4E33D/ICNote/p15"
 	}
 ]
 ```
@@ -154,6 +154,49 @@ Parameter|Type|Description
 name|TEXT|
 id|TEXT|`x-coredata`
 note|COLLECTION|`x-coredata`
+
+```4d
+note:=Notes Get note (id)
+```
+
+メモに登録されているメモの情報をオブジェクト型で返します。
+
+Parameter|Type|Description
+------------|------------|----
+id|TEXT|
+note|OBJECT|
+
+例
+
+```json
+{
+	"id": "x-coredata://5E8616AB-4594-4644-8F88-CE7880A4E33D/ICNote/p15",
+	"folder": "x-coredata://5E8616AB-4594-4644-8F88-CE7880A4E33D/ICFolder/p10",
+	"name": "ううう",
+	"body": "<div>ううう</div>\n",
+	"creationDate": "2019-08-07T10:42:31Z",
+	"modificationDate": "2019-08-07T19:50:27Z",
+	"creationLocalDate": "2019-08-07T19:42:31",
+	"modificationLocalDate": "2019-08-08T04:50:27",
+	"attachments": []
+}
+```
+
+Properties of ``note``:
+
+Parameter|Type|Description
+------------|------------|----
+id|TEXT|`x-coredata`
+folder|TEXT|`x-coredata`
+name|TEXT|
+body|TEXT|
+creationDate|TEXT|
+modificationDate|TEXT|
+creationLocalDate|TEXT|
+modificationLocalDate|TEXT|
+attachments|COLLECTION|collection of `x-coredata`
+
+
 
 
 
@@ -219,26 +262,6 @@ path|TEXT|
 
 **Note**: This methods call ``sqlite3`` to resolve the attachment path.
 
-```
-note:=Notes Get note (id)
-```
-
-Parameter|Type|Description
-------------|------------|----
-id|TEXT|
-note|OBJECT|
-
-Properties of ``note``:
-
-* ``id``:``string``
-* ``name``:``string``
-* ``body``:``string``
-* ``folder``:``string`` (id)
-* ``creationDate``:``string``
-* ``creationLocalDate``:``string``
-* ``modificationDate``:``string``
-* ``modificationLocalDate``:``string``
-* ``attachments``:``array`` of ``string`` (id)
 
 ```
 folder:=Notes Get folder (id)
