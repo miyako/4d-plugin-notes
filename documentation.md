@@ -40,6 +40,55 @@ name|TEXT|
 id|TEXT|`x-coredata`
 folders|COLLECTION|collection of `x-coredata`
 
+```4d
+folders:=Notes GET FOLDERS
+```
+
+メモに登録されているフォルダーの情報をコレクション型で返します。
+
+Parameter|Type|Description
+------------|------------|----
+folders|COLLECTION|collection of `folder`
+
+例
+
+```json
+[
+	{
+		"name": "Notes",
+		"id": "x-coredata://5E8616AB-4594-4644-8F88-CE7880A4E33D/ICFolder/p12",
+		"notes": [],
+		"folders": []
+	},
+	{
+		"name": "Recently Deleted",
+		"id": "x-coredata://5E8616AB-4594-4644-8F88-CE7880A4E33D/ICFolder/p10",
+		"notes": [
+			"x-coredata://5E8616AB-4594-4644-8F88-CE7880A4E33D/ICNote/p22",
+			"x-coredata://5E8616AB-4594-4644-8F88-CE7880A4E33D/ICNote/p21",
+			"x-coredata://5E8616AB-4594-4644-8F88-CE7880A4E33D/ICNote/p15"
+		],
+		"folders": []
+	},
+	{
+		"name": "メモ",
+		"id": "x-coredata://D219C617-A827-4FFA-B8F1-1ADC065277D6/EWSFolder/p4",
+		"notes": [],
+		"folders": []
+	}
+]
+```
+
+Properties of `folder`:
+
+Parameter|Type|Description
+------------|------------|----
+name|TEXT|
+id|TEXT|`x-coredata`
+notes|COLLECTION|collection of `x-coredata`
+folders|COLLECTION|collection of `x-coredata`
+
+
 
 
 
@@ -66,24 +115,7 @@ Properties of ``note``:
 * ``modificationDate``:``string``
 * ``modificationLocalDate``:``string``
 
-```
-Notes GET FOLDERS (folders)
-```
 
-Parameter|Type|Description
-------------|------------|----
-folders|COLLECTION|
-
-Properties of ``folders``:
-
-* ``folders``:``array`` of ``folder``
-
-Properties of ``folder``:
-
-* ``id``:``string``
-* ``name``:``string``
-* ``notes``:``array`` of ``string`` (id)
-* ``folders``:``array`` of ``folder`` (non-recursive)
 
 ```
 Notes GET NOTES (notes)

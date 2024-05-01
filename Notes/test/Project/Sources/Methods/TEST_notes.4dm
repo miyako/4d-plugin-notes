@@ -1,9 +1,9 @@
 //%attributes = {}
 $accounts:=Notes GET ACCOUNTS
-SET TEXT TO PASTEBOARD:C523(JSON Stringify:C1217($accounts; *))
-
-
 $folders:=Notes GET FOLDERS
+SET TEXT TO PASTEBOARD:C523(JSON Stringify:C1217($folders; *))
+
+
 $folders:=$folders.query("name == :1"; "Notes")
 
 $folder:=Notes Create folder($folders[0].id; "title4")
