@@ -948,7 +948,6 @@ PA_ObjectRef getAttachment(C_TEXT &attachment_id)
     
     if(attachment)
     {
-       
         NSString *script = [[NSString alloc]initWithFormat:
                             @"tell application \"%@\" \n\
                             contents of attachment id \"%@\" as Unicode text \n\
@@ -967,6 +966,9 @@ PA_ObjectRef getAttachment(C_TEXT &attachment_id)
         [scriptObject release];
         [script release];
 
+        NotesNote *note = attachment.container.get;
+        ob_set_s(json, L"note", [note.id UTF8String]);
+        
         ob_set_d(json, L"creationDate", attachment.creationDate);
         ob_set_d(json, L"modificationDate", attachment.modificationDate);
         ob_set_d(json, L"creationLocalDate", attachment.creationDate, NO);

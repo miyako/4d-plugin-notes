@@ -293,12 +293,13 @@ attachment|OBJECT|
 {
 	"id": "x-coredata://5E8616AB-4594-4644-8F88-CE7880A4E33D/ICAttachment/p23",
 	"contents": "Macintosh HD:Users:miyako:Library:Group Containers:group.com.apple.notes:Accounts:F67EF39F-73DE-4FB8-840C-6034A72B5272:Media:C955A294-CA7D-43BC-8C88-92033CFF1702:1_B8A3CD7C-9BA6-4322-A17E-C5AF8E90F3B7:410.png",
+	"note": "x-coredata://5E8616AB-4594-4644-8F88-CE7880A4E33D/ICNote/p22",
 	"creationDate": "2024-05-01T04:56:52Z",
 	"modificationDate": "2024-05-01T04:56:52Z",
 	"creationLocalDate": "2024-05-01T13:56:52",
 	"modificationLocalDate": "2024-05-01T13:56:52",
 	"contentIdentifier": "cid:6ADF0ACD-9233-4072-8549-AE958FD76D4A@icloud.apple.com",
-	"name": "image.png"
+	"name": "410.png"
 }
 ```
 
@@ -307,6 +308,7 @@ Properties of ``attachment``:
 Parameter|Type|Description
 ------------|------------|----
 id|TEXT|`x-coredata`
+note|TEXT|`x-coredata`
 contents|TEXT|ファイルパス
 name|TEXT|
 creationDate|TEXT|
