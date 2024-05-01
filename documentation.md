@@ -127,6 +127,36 @@ name|TEXT|
 id|TEXT|`x-coredata`
 attachments|COLLECTION|collection of `x-coredata`
 
+```4d
+attachments:=Notes GET ATTACHMENTS
+```
+
+メモに登録されている添付ファイルの情報をコレクション型で返します。
+
+Parameter|Type|Description
+------------|------------|----
+attachments|COLLECTION|collection of `attachment`
+
+```json
+[
+	{
+		"name": "image.png",
+		"id": "x-coredata://5E8616AB-4594-4644-8F88-CE7880A4E33D/ICAttachment/p23",
+		"note": "x-coredata://5E8616AB-4594-4644-8F88-CE7880A4E33D/ICAttachment/p23"
+	}
+]
+```
+
+Properties of ``attachment``:
+
+Parameter|Type|Description
+------------|------------|----
+name|TEXT|
+id|TEXT|`x-coredata`
+note|COLLECTION|`x-coredata`
+
+
+
 
 
 
@@ -159,23 +189,7 @@ Properties of ``note``:
 
 
 
-```
-Notes GET ATTACHMENTS (attachments)
-```
 
-Parameter|Type|Description
-------------|------------|----
-attachments|COLLECTION|
-
-Properties of ``attachments``:
-
-* ``attachments``:``array`` of ``attachment``
-
-Properties of ``attachment``:
-
-* ``id``:``string``
-* ``name``:``string``
-* ``note``:``string`` (id)
 
 
 
