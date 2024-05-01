@@ -1,4 +1,4 @@
-## Syntax
+## ランゲージ
 
 ```
 note:=Notes Create note (folder;title;body;attachments{;$names})
