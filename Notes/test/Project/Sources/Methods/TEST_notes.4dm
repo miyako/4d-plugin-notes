@@ -1,5 +1,7 @@
 //%attributes = {}
 $accounts:=Notes GET ACCOUNTS
+SET TEXT TO PASTEBOARD:C523(JSON Stringify:C1217($accounts; *))
+
 
 $folders:=Notes GET FOLDERS
 $folders:=$folders.query("name == :1"; "Notes")

@@ -1,5 +1,48 @@
 ## ランゲージ
 
+```4d
+accounts:=Notes GET ACCOUNTS
+```
+
+Parameter|Type|Description
+------------|------------|----
+accounts|COLLECTION|collection of `account`
+
+メモに登録されているアカウントの情報をコレクション型で返します。
+
+例
+
+```json
+[
+	{
+		"name": "Exchange",
+		"id": "x-coredata://D219C617-A827-4FFA-B8F1-1ADC065277D6/EWSAccount/p2",
+		"folders": [
+			"x-coredata://D219C617-A827-4FFA-B8F1-1ADC065277D6/EWSFolder/p4"
+		]
+	},
+	{
+		"name": "iCloud",
+		"id": "x-coredata://5E8616AB-4594-4644-8F88-CE7880A4E33D/ICAccount/p11",
+		"folders": [
+			"x-coredata://5E8616AB-4594-4644-8F88-CE7880A4E33D/ICFolder/p12",
+			"x-coredata://5E8616AB-4594-4644-8F88-CE7880A4E33D/ICFolder/p10"
+		]
+	}
+]
+```
+
+Properties of ``account``:
+
+Parameter|Type|Description
+------------|------------|----
+name|TEXT|
+id|TEXT|`x-coredata`
+folders|COLLECTION|collection of `x-coredata`
+
+
+
+
 ```
 note:=Notes Create note (folder;title;body;attachments{;$names})
 ```
@@ -78,23 +121,7 @@ Properties of ``attachment``:
 * ``name``:``string``
 * ``note``:``string`` (id)
 
-```
-Notes GET ACCOUNTS (accounts)
-```
 
-Parameter|Type|Description
-------------|------------|----
-accounts|COLLECTION|
-
-Properties of ``accounts``:
-
-* ``accounts``:``array`` of ``account``
-
-Properties of ``account``:
-
-* ``id``:``string``
-* ``name``:``string``
-* ``folders``:``array`` of ``folder`` (non-recursive)
 
 ```
 folder:=Notes Create folder (parent;name)
