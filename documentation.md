@@ -88,6 +88,46 @@ id|TEXT|`x-coredata`
 notes|COLLECTION|collection of `x-coredata`
 folders|COLLECTION|collection of `x-coredata`
 
+```4d
+notes:=Notes GET NOTES
+```
+メモに登録されているメモの情報をコレクション型で返します。
+
+Parameter|Type|Description
+------------|------------|----
+notes|COLLECTION|collection of `note`
+
+例
+
+```json
+[
+	{
+		"name": "あああ",
+		"id": "x-coredata://5E8616AB-4594-4644-8F88-CE7880A4E33D/ICNote/p22",
+		"attachments": []
+	},
+	{
+		"name": "いいい",
+		"id": "x-coredata://5E8616AB-4594-4644-8F88-CE7880A4E33D/ICNote/p21",
+		"attachments": []
+	},
+	{
+		"name": "ううう",
+		"id": "x-coredata://5E8616AB-4594-4644-8F88-CE7880A4E33D/ICNote/p15",
+		"attachments": []
+	}
+]
+```
+
+Properties of ``note``:
+
+Parameter|Type|Description
+------------|------------|----
+name|TEXT|
+id|TEXT|`x-coredata`
+attachments|COLLECTION|collection of `x-coredata`
+
+
 
 
 
@@ -117,23 +157,7 @@ Properties of ``note``:
 
 
 
-```
-Notes GET NOTES (notes)
-```
 
-Parameter|Type|Description
-------------|------------|----
-notes|COLLECTION|
-
-Properties of ``notes``:
-
-* ``notes``:``array`` of ``note``
-
-Properties of ``note``:
-
-* ``id``:``string``
-* ``name``:``string``
-* ``attachments``:``array`` of ``string`` (id)
 
 ```
 Notes GET ATTACHMENTS (attachments)
