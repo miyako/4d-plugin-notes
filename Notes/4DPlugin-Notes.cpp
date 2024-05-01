@@ -482,88 +482,41 @@ void doScript(NSAppleEventDescriptor *event)
 
 void addAttachment(NotesNote *note, NSData *data, NSString *name)
 {
+    NSString *uniqueDirectoryPath = [NSTemporaryDirectory() stringByAppendingPathComponent:uuidString()];
+    NSURL *uniqueDirectory = [NSURL fileURLWithPath:uniqueDirectoryPath];
+    NSURL *dstPath = [uniqueDirectory URLByAppendingPathComponent:name];
     
-    NSArray *URLs = [[NSFileManager defaultManager]
-                     URLsForDirectory:NSLibraryDirectory
-                     inDomains:NSUserDomainMask];
-    
-    if(URLs && [URLs count])
+    if([[NSFileManager defaultManager]createDirectoryAtURL:uniqueDirectory
+                               withIntermediateDirectories:YES attributes:nil error:nil])
     {
-        NSURL *libraryDirectory = [URLs objectAtIndex:0];
-        NSURL *containerDirectory = [libraryDirectory URLByAppendingPathComponent:@"Group Containers"];
-        NSURL *groupDirectory = [containerDirectory URLByAppendingPathComponent:@"group.com.apple.notes"];
-        NSURL *mediaDirectory = [groupDirectory URLByAppendingPathComponent:@"Media"];
-        NSURL *uniqueDirectory = [mediaDirectory URLByAppendingPathComponent:uuidString()];
-        NSURL *dstPath = [uniqueDirectory URLByAppendingPathComponent:name];
-        
-        if([[NSFileManager defaultManager]createDirectoryAtURL:uniqueDirectory
-                                   withIntermediateDirectories:YES attributes:nil error:nil])
+        if([data writeToURL:dstPath atomically:YES])
         {
-            if([data writeToURL:dstPath atomically:YES])
+            NSString *script = [[NSString alloc]initWithFormat:
+                                @"tell application \"%@\" \n\
+                                set %@ to note id \"%@\" \n\
+                                set %@ to make new attachment at end of attachments of %@ with data POSIX file \"%@\" \n\
+                                end tell",
+                                @"Notes",
+                                @"the_note", note.id,
+                                @"the_attachment", @"the_note", [dstPath path]];
+            
+//            NSLog(@"%@", script);
+            
+            NSAppleScript *scriptObject = [[NSAppleScript alloc]initWithSource:script];
+            
+            if([scriptObject compileAndReturnError:nil])
             {
-                if(false)
-                {
-                    NSString *script = [[NSString alloc]initWithFormat:
-                                        @"tell application \"%@\" \n\
-                                        set %@ to note id \"%@\" \n\
-                                        set %@ to make new attachment at %@ with data \"%@\" \n\
-                                        end tell",
-                                        @"Notes",
-                                        @"the_note", note.id,
-                                        @"the_attachment", @"the_note", [dstPath path]];
-                    
-                    NSLog(@"%@", script);
-                    
-                    NSAppleScript *scriptObject = [[NSAppleScript alloc]initWithSource:script];
-                    
-                    if([scriptObject compileAndReturnError:nil])
-                    {
-                        NSAppleEventDescriptor *returnValue = [scriptObject executeAndReturnError:nil];
-                        NSLog(@"%@", returnValue);
-                    }
-                    
-                    [scriptObject release];
-                    [script release];
-                }
-                
-                if(true)
-                {
-                    NSAppleEventDescriptor *parameters = [NSAppleEventDescriptor listDescriptor];
-                    NSAppleEventDescriptor *param_note_id = [NSAppleEventDescriptor descriptorWithString:note.id];
-                    [parameters insertDescriptor:param_note_id atIndex:1];
-                    NSAppleEventDescriptor *param_attachment_path = [NSAppleEventDescriptor descriptorWithString:[dstPath path]];
-                    [parameters insertDescriptor:param_attachment_path atIndex:2];
-                    
-                    ProcessSerialNumber psn = {0, kCurrentProcess};
-                    NSAppleEventDescriptor *target =
-                    [NSAppleEventDescriptor
-                     descriptorWithDescriptorType:typeProcessSerialNumber
-                     bytes:&psn
-                     length:sizeof(ProcessSerialNumber)];
-                    
-                    NSAppleEventDescriptor *handler = [NSAppleEventDescriptor descriptorWithString:@"add_attachment"];
-                    
-                    NSAppleEventDescriptor *event =
-                    [NSAppleEventDescriptor appleEventWithEventClass:kASAppleScriptSuite
-                                                             eventID:kASSubroutineEvent
-                                                    targetDescriptor:target
-                                                            returnID:kAutoGenerateReturnID
-                                                       transactionID:kAnyTransactionID];
-                    
-                    [event setParamDescriptor:handler forKeyword:keyASSubroutineName];
-                    [event setParamDescriptor:parameters forKeyword:keyDirectObject];
-                    
-                    PA_RunInMainProcess((PA_RunInMainProcessProcPtr)doScript, event);
-                    
-                }
-                
-                //cleanup
-                /*
-                 if([[NSFileManager defaultManager]removeItemAtPath:[dstPath path] error:nil])
-                 {
-                 [[NSFileManager defaultManager]removeItemAtPath:[uniqueDirectory path] error:nil];
-                 }
-                 */
+                NSAppleEventDescriptor *returnValue = [scriptObject executeAndReturnError:nil];
+//                NSLog(@"%@", returnValue);
+            }
+            
+            [scriptObject release];
+            [script release];
+            
+            //cleanup
+            if([[NSFileManager defaultManager]removeItemAtPath:[dstPath path] error:nil])
+            {
+                [[NSFileManager defaultManager]removeItemAtPath:[uniqueDirectory path] error:nil];
             }
         }
     }

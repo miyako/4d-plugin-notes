@@ -320,7 +320,7 @@ contentIdentifier|TEXT|
 ## オブジェクト作成
 
 * Notes Create folder
-* Notes Create note🐞
+* Notes Create note
 
 ```4d
 folder:=Notes Create folder (parent;name)
@@ -390,8 +390,6 @@ creationDate|TEXT|
 modificationDate|TEXT|
 creationLocalDate|TEXT|
 modificationLocalDate|TEXT|
-
-🐞ScriptingBridge経由で添付ファイルを登録することはできなくなりました。
 
 ## ユーティリティ
 
