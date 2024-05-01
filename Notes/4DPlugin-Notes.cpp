@@ -732,7 +732,7 @@ PA_CollectionRef getAttachments()
                 NotesNote *note = [attachmentNotes objectAtIndex:i];
                 
                 ob_set_s(item, L"name", [attachmentName UTF8String]);
-                ob_set_s(item, L"id", [attachmentId UTF8String]);                
+                ob_set_s(item, L"id", [attachmentId UTF8String]);
                 ob_set_s(item, L"note", [note.id UTF8String]);
                 
                 PA_Variable v = PA_CreateVariable(eVK_Object);
@@ -1367,7 +1367,9 @@ void Notes_Get_attachment(PA_PluginParameters params) {
             sqlite3 *notesStore = NULL;
             if(Notes::sqlPath)
             {
-                if(SQLITE_OK == sqlite3_open(Notes::sqlPath, &notesStore))
+                
+                int res = sqlite3_open(Notes::sqlPath, &notesStore);
+                if(SQLITE_OK == res)
                 {
                     CUTF8String attachment_id;
                     Param1.copyUTF8String(&attachment_id);

@@ -167,7 +167,7 @@ note|COLLECTION|collection of `x-coredata`
 * Notes Get account
 * Notes Get folder
 * Notes Get note
-* Notes Get attachment
+* Notes Get attachment🐞
 
 ```4d
 account:=Notes Get account (id)
@@ -287,12 +287,12 @@ Parameter|Type|Description
 attachment|TEXT|
 path|TEXT|
 
-🐞添付ファイルの取得に問題があります。
+🐞SQLite3経由で添付ファイルのパスを取得することはできなくなりました。
 
 ## オブジェクト作成
 
 * Notes Create folder
-* Notes Create note
+* Notes Create note🐞
 
 ```4d
 folder:=Notes Create folder (parent;name)
@@ -340,7 +340,15 @@ note|OBJECT|`note`
 例
 
 ```json
-
+{
+	"id": "x-coredata://D219C617-A827-4FFA-B8F1-1ADC065277D6/EWSNote/p4",
+	"name": "title",
+	"body": "body",
+	"creationDate": "2024-05-01T06:05:55Z",
+	"modificationDate": "2024-05-01T06:05:55Z",
+	"creationLocalDate": "2024-05-01T15:05:55",
+	"modificationLocalDate": "2024-05-01T15:05:55"
+}
 ```
 
 Properties of ``note``:
@@ -355,4 +363,16 @@ modificationDate|TEXT|
 creationLocalDate|TEXT|
 modificationLocalDate|TEXT|
 
-🐞添付ファイルの追加に問題があります。
+🐞ScriptingBridge経由で添付ファイルを登録することはできなくなりました。
+
+## ユーティリティ
+
+```4d
+Notes SHOW (note)
+```
+
+メモを起動してメモを表示します。
+
+Parameter|Type|Description
+------------|------------|----
+note|TEXT|`x-coredata`または本文の一部（標準テキスト）
