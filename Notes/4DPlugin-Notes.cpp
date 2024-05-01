@@ -732,7 +732,7 @@ PA_CollectionRef getAttachments()
                 NotesNote *note = [attachmentNotes objectAtIndex:i];
                 
                 ob_set_s(item, L"name", [attachmentName UTF8String]);
-                ob_set_s(item, L"id", [attachmentId UTF8String]);                NotesNote *note = [attachmentNotes objectAtIndex:i];
+                ob_set_s(item, L"id", [attachmentId UTF8String]);                
                 ob_set_s(item, L"note", [note.id UTF8String]);
                 
                 PA_Variable v = PA_CreateVariable(eVK_Object);
