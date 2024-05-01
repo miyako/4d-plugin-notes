@@ -44,7 +44,7 @@
         },
         {
             "theme": "Notes",
-            "syntax": "Notes Get attachment(&T):T",
+            "syntax": "Notes Get attachment(&T):J",
             "threadSafe": true
         },
         {

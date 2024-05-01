@@ -331,6 +331,47 @@ NotesAccount *_getAccount(PA_ObjectRef json)
     return account;
 }
 
+NotesAttachment *_getAttachment(PA_ObjectRef json)
+{
+    NotesAttachment *attachment = nil;
+    
+    NotesApplication *application = [SBApplication applicationWithBundleIdentifier:NOTES_APP_ID];
+    
+    if(application){
+        SBElementArray *attachments = [application attachments];
+        
+        NSArray *attachmentsIds = [attachments arrayByApplyingSelector:@selector(id)];
+        
+        if([attachmentsIds count])
+        {
+            CUTF16String _id;
+            if(ob_get_a(json, L"id", &_id)){
+                NSString *attachmentId = [[NSString alloc]initWithCharacters:(const unichar *)_id.c_str() length:_id.length()];
+                if(attachmentId) {
+                    
+                    NSUInteger i = [attachmentsIds indexOfObjectPassingTest:^BOOL(id obj, NSUInteger idx, BOOL *stop)
+                                    {
+                        if ([(NSString*)obj isEqualToString:attachmentId])
+                        {
+                            return YES;
+                        }
+                        return NO;
+                    }];
+                    
+                    if(NSNotFound != i)
+                    {
+                        attachment = [attachments objectWithID:attachmentId];
+                    }
+                    
+                    [attachmentId release];
+                }
+            }
+        }
+    }
+    
+    return attachment;
+}
+
 void _getFolder(PA_CollectionRef n, NotesFolder *folder)
 {
     PA_ObjectRef json = PA_CreateObject();
@@ -895,6 +936,55 @@ PA_ObjectRef getAccount(C_TEXT &account_id)
     
 }
 
+PA_ObjectRef getAttachment(C_TEXT &attachment_id)
+{
+    PA_ObjectRef json = PA_CreateObject();
+    
+    CUTF16String _attachment_id;
+    attachment_id.copyUTF16String(&_attachment_id);
+    ob_set_a(json, L"id", &_attachment_id);
+    
+    NotesAttachment *attachment = _getAttachment(json);
+    
+    if(attachment)
+    {
+       
+        NSString *script = [[NSString alloc]initWithFormat:
+                            @"tell application \"%@\" \n\
+                            contents of attachment id \"%@\" as Unicode text \n\
+                            end tell",
+                            @"Notes",
+                            attachment.id];
+        
+        NSAppleScript *scriptObject = [[NSAppleScript alloc]initWithSource:script];
+        
+        if([scriptObject compileAndReturnError:nil])
+        {
+            NSAppleEventDescriptor *returnValue = [scriptObject executeAndReturnError:nil];
+            ob_set_s(json, L"contents", [returnValue.stringValue UTF8String]);
+        }
+        
+        [scriptObject release];
+        [script release];
+
+        ob_set_d(json, L"creationDate", attachment.creationDate);
+        ob_set_d(json, L"modificationDate", attachment.modificationDate);
+        ob_set_d(json, L"creationLocalDate", attachment.creationDate, NO);
+        ob_set_d(json, L"modificationLocalDate", attachment.modificationDate, NO);
+        ob_set_s(json, L"contentIdentifier", [attachment.contentIdentifier UTF8String]);
+        ob_set_s(json, L"name", [attachment.name UTF8String]);
+        
+    }else{
+        
+        PA_DisposeObject(json);
+        json = PA_CreateObject();
+        
+    }
+    
+    return json;
+    
+}
+
 #pragma mark -
 
 PA_ObjectRef createFolder(PA_PluginParameters params)
@@ -1342,6 +1432,7 @@ void Notes_Get_notification(PA_PluginParameters params) {
     
 }
 
+#define USE_SQLITE3 0
 void Notes_Get_attachment(PA_PluginParameters params) {
     
     sLONG_PTR *pResult = (sLONG_PTR *)params->fResult;
@@ -1351,9 +1442,9 @@ void Notes_Get_attachment(PA_PluginParameters params) {
     C_TEXT returnValue;
     
     Param1.fromParamAtIndex(pParams, 1);
-    
+        
+#if USE_SQLITE3
     NSString *attachment_id = Param1.copyUTF16String();
-    
     if(Notes::attachment_regex)
     {
         NSTextCheckingResult *match = [Notes::attachment_regex firstMatchInString:attachment_id
@@ -1367,9 +1458,7 @@ void Notes_Get_attachment(PA_PluginParameters params) {
             sqlite3 *notesStore = NULL;
             if(Notes::sqlPath)
             {
-                
-                int res = sqlite3_open(Notes::sqlPath, &notesStore);
-                if(SQLITE_OK == res)
+                if(SQLITE_OK == sqlite3_open(Notes::sqlPath, &notesStore))
                 {
                     CUTF8String attachment_id;
                     Param1.copyUTF8String(&attachment_id);
@@ -1466,11 +1555,11 @@ void Notes_Get_attachment(PA_PluginParameters params) {
             }
         }
     }
+#endif
     
-    [attachment_id release];
+    PA_ObjectRef attachment = Notes::getAttachment(Param1);
     
-    returnValue.setReturn(pResult);
-    
+    PA_ReturnObject(params, attachment);
 }
 
 void Notes_Get_note(PA_PluginParameters params) {

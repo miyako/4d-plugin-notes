@@ -7,15 +7,15 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "763E806D-E973-4FB3-9992-C829C7904EDA"
-            shouldBeEnabled = "Yes"
+            uuid = "3832484F-8284-4A9D-8032-47C02DE85A66"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "4DPlugin-Notes.cpp"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1368"
-            endingLineNumber = "1368"
+            startingLineNumber = "1560"
+            endingLineNumber = "1560"
             landmarkName = "Notes_Get_attachment(params)"
             landmarkType = "9">
          </BreakpointContent>
