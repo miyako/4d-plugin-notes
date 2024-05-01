@@ -162,7 +162,7 @@ name|TEXT|
 id|TEXT|`x-coredata`
 note|COLLECTION|collection of `x-coredata`
 
-## オブジェクト
+## オブジェクト取得
 
 * Notes Get account
 * Notes Get folder
@@ -289,42 +289,10 @@ path|TEXT|
 
 🐞添付ファイルの取得に問題があります。
 
-## 作成
+## オブジェクト作成
 
-```4d
-note:=Notes Create note (folder;title;body;attachments{;$names})
-```
-
-オブジェクト型からメモを作成します。
-
-Parameter|Type|Description
-------------|------------|----
-folder|TEXT|`x-coredata`
-title|TEXT|
-body|TEXT|
-attachments|ARRAY PICTURE or ARRAY BLOB|添付ファイル
-names|ARRAY TEXT|添付ファイル名
-note|OBJECT|
-
-例
-
-```json
-
-```
-
-Properties of ``note``:
-
-Parameter|Type|Description
-------------|------------|----
-id|TEXT|`x-coredata`
-name|TEXT|
-body|TEXT|
-creationDate|TEXT|
-modificationDate|TEXT|
-creationLocalDate|TEXT|
-modificationLocalDate|TEXT|
-
-🐞添付ファイルの追加に問題があります。
+* Notes Create folder
+* Notes Create note
 
 ```4d
 folder:=Notes Create folder (parent;name)
@@ -353,3 +321,38 @@ Parameter|Type|Description
 ------------|------------|----
 id|TEXT|`x-coredata`
 name|TEXT|フォルダー名
+
+```4d
+note:=Notes Create note (folder;title;body;attachments{;$names})
+```
+
+オブジェクト型からメモを作成します。
+
+Parameter|Type|Description
+------------|------------|----
+folder|TEXT|`x-coredata`
+title|TEXT|
+body|TEXT|
+attachments|ARRAY PICTURE or ARRAY BLOB|添付ファイル
+names|ARRAY TEXT|添付ファイル名
+note|OBJECT|`note`
+
+例
+
+```json
+
+```
+
+Properties of ``note``:
+
+Parameter|Type|Description
+------------|------------|----
+id|TEXT|`x-coredata`
+name|TEXT|
+body|TEXT|
+creationDate|TEXT|
+modificationDate|TEXT|
+creationLocalDate|TEXT|
+modificationLocalDate|TEXT|
+
+🐞添付ファイルの追加に問題があります。
