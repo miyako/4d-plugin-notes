@@ -424,7 +424,6 @@ BOOL _createNote(PA_ObjectRef json)
                             NotesNote *note = [[[application classForScriptingClass:@"note"]alloc]
                                                initWithProperties:notes_props];
                             
-                            [notes_props release];
                             
                             SBElementArray <NotesNote *>*notes = [folder notes];
                             
@@ -446,6 +445,7 @@ BOOL _createNote(PA_ObjectRef json)
                             }
                         }
                         
+                        [notes_props release];
                         [body release];
                         
                     }
@@ -480,6 +480,15 @@ void doScript(NSAppleEventDescriptor *event)
 
 #pragma mark Public
 
+// The file name comes from the caller's array; a " or \ in it would end the
+// AppleScript string literal early (broken script, or script injection).
+static NSString *appleScriptEscape(NSString *value)
+{
+    if(!value) return @"";
+    NSString *escaped = [value stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"];
+    return [escaped stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
+}
+
 void addAttachment(NotesNote *note, NSData *data, NSString *name)
 {
     NSString *uniqueDirectoryPath = [NSTemporaryDirectory() stringByAppendingPathComponent:uuidString()];
@@ -497,8 +506,8 @@ void addAttachment(NotesNote *note, NSData *data, NSString *name)
                                 set %@ to make new attachment at end of attachments of %@ with data POSIX file \"%@\" \n\
                                 end tell",
                                 @"Notes",
-                                @"the_note", note.id,
-                                @"the_attachment", @"the_note", [dstPath path]];
+                                @"the_note", appleScriptEscape(note.id),
+                                @"the_attachment", @"the_note", appleScriptEscape([dstPath path])];
             
 //            NSLog(@"%@", script);
             
@@ -538,7 +547,10 @@ PA_CollectionRef getNotes()
             NSArray *noteNames = [notes arrayByApplyingSelector:@selector(name)];
             NSArray *noteIds = [notes arrayByApplyingSelector:@selector(id)];
             
-            for(NSUInteger i = 0; i < [noteNames count]; ++i)
+            // names and ids come from separate Apple events and can differ in length
+            // if notes are added or deleted in between; objectAtIndex: would throw.
+            NSUInteger count = MIN([noteNames count], [noteIds count]);
+            for(NSUInteger i = 0; i < count; ++i)
             {
                 PA_ObjectRef item = PA_CreateObject();
                 
@@ -555,7 +567,7 @@ PA_CollectionRef getNotes()
                 NSArray *attachmentIds = [[note attachments]arrayByApplyingSelector:@selector(id)];
                 for(NSUInteger j = 0; j < [attachmentIds count]; ++j)
                 {
-                    PA_Variable v = PA_CreateVariable(eVK_Unistring);
+                    PA_Variable v = PA_CreateVariable(eVK_Undefined); // PA_SetStringVariable sets the type; eVK_Unistring would allocate a string that is then leaked
                     C_TEXT t;
                     t.setUTF16String([attachmentIds objectAtIndex:j]);
                     PA_Unistring u = PA_CreateUnistring((PA_Unichar *)t.getUTF16StringPtr());
@@ -592,7 +604,8 @@ PA_CollectionRef getFolders()
             NSArray *folderNames = [folders arrayByApplyingSelector:@selector(name)];
             NSArray *folderIds = [folders arrayByApplyingSelector:@selector(id)];
             
-            for(NSUInteger i = 0; i < [folderNames count]; ++i)
+            NSUInteger count = MIN([folderNames count], [folderIds count]); // see getNotes()
+            for(NSUInteger i = 0; i < count; ++i)
             {
                 PA_ObjectRef item = PA_CreateObject();
                 
@@ -609,7 +622,7 @@ PA_CollectionRef getFolders()
                 NSArray *noteIds = [[folder notes]arrayByApplyingSelector:@selector(id)];
                 for(NSUInteger j = 0; j < [noteIds count]; ++j)
                 {
-                    PA_Variable v = PA_CreateVariable(eVK_Unistring);
+                    PA_Variable v = PA_CreateVariable(eVK_Undefined); // PA_SetStringVariable sets the type; eVK_Unistring would allocate a string that is then leaked
                     C_TEXT t;
                     t.setUTF16String([noteIds objectAtIndex:j]);
                     PA_Unistring u = PA_CreateUnistring((PA_Unichar *)t.getUTF16StringPtr());
@@ -625,7 +638,7 @@ PA_CollectionRef getFolders()
                 NSArray *subfolderIds = [[folder folders]arrayByApplyingSelector:@selector(id)];
                 for(NSUInteger j = 0; j < [subfolderIds count]; ++j)
                 {
-                    PA_Variable v = PA_CreateVariable(eVK_Unistring);
+                    PA_Variable v = PA_CreateVariable(eVK_Undefined); // PA_SetStringVariable sets the type; eVK_Unistring would allocate a string that is then leaked
                     C_TEXT t;
                     t.setUTF16String([subfolderIds objectAtIndex:j]);
                     PA_Unistring u = PA_CreateUnistring((PA_Unichar *)t.getUTF16StringPtr());
@@ -662,7 +675,8 @@ PA_CollectionRef getAccounts()
             NSArray *accountNames = [accounts arrayByApplyingSelector:@selector(name)];
             NSArray *accountIds = [accounts arrayByApplyingSelector:@selector(id)];
             
-            for(NSUInteger i = 0; i < [accountNames count]; ++i)
+            NSUInteger count = MIN([accountNames count], [accountIds count]); // see getNotes()
+            for(NSUInteger i = 0; i < count; ++i)
             {
                 PA_ObjectRef item = PA_CreateObject();
                 
@@ -679,7 +693,7 @@ PA_CollectionRef getAccounts()
                 NSArray *folderIds = [[account folders]arrayByApplyingSelector:@selector(id)];
                 for(NSUInteger j = 0; j < [folderIds count]; ++j)
                 {
-                    PA_Variable v = PA_CreateVariable(eVK_Unistring);
+                    PA_Variable v = PA_CreateVariable(eVK_Undefined); // PA_SetStringVariable sets the type; eVK_Unistring would allocate a string that is then leaked
                     C_TEXT t;
                     t.setUTF16String([folderIds objectAtIndex:j]);
                     PA_Unistring u = PA_CreateUnistring((PA_Unichar *)t.getUTF16StringPtr());
@@ -717,7 +731,8 @@ PA_CollectionRef getAttachments()
             NSArray *attachmentIds = [attachments arrayByApplyingSelector:@selector(id)];
             NSArray *attachmentNotes = [attachments arrayByApplyingSelector:@selector(container)];
             
-            for(NSUInteger i = 0; i < [attachments count]; ++i)
+            NSUInteger count = MIN(MIN([attachmentNames count], [attachmentIds count]), [attachmentNotes count]); // see getNotes()
+            for(NSUInteger i = 0; i < count; ++i)
             {
                 PA_ObjectRef item = PA_CreateObject();
                 
@@ -773,7 +788,7 @@ PA_ObjectRef getNote(C_TEXT &note_id)
         NSArray *attachmentIds = [[note attachments]arrayByApplyingSelector:@selector(id)];
         for(NSUInteger i = 0; i < [attachmentIds count]; ++i)
         {
-            PA_Variable v = PA_CreateVariable(eVK_Unistring);
+            PA_Variable v = PA_CreateVariable(eVK_Undefined); // PA_SetStringVariable sets the type; eVK_Unistring would allocate a string that is then leaked
             C_TEXT t;
             t.setUTF16String([attachmentIds objectAtIndex:i]);
             PA_Unistring u = PA_CreateUnistring((PA_Unichar *)t.getUTF16StringPtr());
@@ -826,7 +841,8 @@ PA_ObjectRef getFolder(C_TEXT &folder_id)
         NSArray *noteIds = [[folder notes]arrayByApplyingSelector:@selector(id)];
         NSArray *noteNames = [[folder notes]arrayByApplyingSelector:@selector(name)];
         
-        for(NSUInteger j = 0; j < [noteIds count]; ++j)
+        NSUInteger count = MIN([noteIds count], [noteNames count]); // see getNotes()
+        for(NSUInteger j = 0; j < count; ++j)
         {
             
             PA_ObjectRef item = PA_CreateObject();
@@ -999,7 +1015,6 @@ PA_ObjectRef createFolder(PA_PluginParameters params)
             if(application){
                 NotesFolder *folder = [[[application classForScriptingClass:@"folder"]alloc]
                                        initWithProperties:folders_props];
-                [folders_props release];
                 
                 NSUInteger beforeCount = [parentFolders count];
                 [parentFolders insertObject:folder atIndex:0];
@@ -1020,6 +1035,7 @@ PA_ObjectRef createFolder(PA_PluginParameters params)
                 }
             }
         }
+        [folders_props release];
         
     }else{
         
@@ -1082,10 +1098,11 @@ PA_ObjectRef createNote(PA_PluginParameters params)
                         PA_Variable args[2];
                         args[0] = PA_CreateVariable(eVK_Picture);
                         PA_SetPictureVariable(&args[0], p);// disposed each time with PA_ClearVariable
-                        args[1] = PA_CreateVariable(eVK_Unistring);
-                        PA_Unistring codec = PA_CreateUnistring((PA_Unichar *)".\0p\0n\0g\0\0\0");
-                        PA_SetStringVariable(&args[1], &codec);// disposed each time with PA_ClearVariable
+                        args[1] = PA_CreateVariable(eVK_Undefined);
+                        PA_Unistring codec = PA_CreateUnistring((PA_Unichar *)u".png");
+                        PA_SetStringVariable(&args[1], &codec);
                         PA_ExecuteCommandByID(CMD_CONVERT_PICTURE, args, 2);
+                        PA_ClearVariable(&args[1]);// releases the codec string
                         p = PA_GetPictureVariable(args[0]); // a new picture is created
                         PA_Handle h = PA_NewHandle(0);
                         PA_GetPictureData(p, 1, h);
@@ -1095,12 +1112,14 @@ PA_ObjectRef createNote(PA_PluginParameters params)
                             
                             NSString *name = nil;
                             
-                            if((names.fType == eVK_ArrayUnicode) && (PA_GetArrayNbElements(names) <= i))
+                            if((names.fType == eVK_ArrayUnicode) && (i <= (unsigned int)PA_GetArrayNbElements(names)))
                             {
                                 PA_Unistring u = PA_GetStringInArray(names, i);
-                                name = [[NSString alloc]initWithCharacters:(const unichar *)u.fString  length:u.fLength];
+                                if(u.fString && u.fLength > 0)
+                                    name = [[NSString alloc]initWithCharacters:(const unichar *)u.fString  length:u.fLength];
                                 
-                            }else{
+                            }
+                            if(!name){
                                 name = [[NSString alloc]initWithFormat:@"%@.png", uuidString()];
                             }
                             
@@ -1132,12 +1151,14 @@ PA_ObjectRef createNote(PA_PluginParameters params)
                         
                         NSString *name = nil;
                         
-                        if((names.fType == eVK_ArrayUnicode) && (PA_GetArrayNbElements(names) <= i))
+                        if((names.fType == eVK_ArrayUnicode) && (i <= (unsigned int)PA_GetArrayNbElements(names)))
                         {
                             PA_Unistring u = PA_GetStringInArray(names, i);
-                            name = [[NSString alloc]initWithCharacters:(const unichar *)u.fString  length:u.fLength];
+                            if(u.fString && u.fLength > 0)
+                                name = [[NSString alloc]initWithCharacters:(const unichar *)u.fString  length:u.fLength];
                             
-                        }else{
+                        }
+                        if(!name){
                             name = [[NSString alloc]initWithFormat:@"%@", uuidString()];
                         }
                         
@@ -1186,6 +1207,8 @@ void PluginMain(PA_long32 selector, PA_PluginParameters params) {
     
     try
     {
+        @autoreleasepool
+        {
         switch(selector)
         {
             case kInitPlugin :
@@ -1239,6 +1262,7 @@ void PluginMain(PA_long32 selector, PA_PluginParameters params) {
             case 13 :
                 Notes_SHOW(params);
                 break;
+        }
         }
     }
     catch(...)
@@ -1333,44 +1357,74 @@ void Notes_SHOW(PA_PluginParameters params) {
 
 void Notes_Create_note(PA_PluginParameters params) {
     
-    PA_ObjectRef note = Notes::createNote(params);
+    PA_ObjectRef note = NULL;
+    try {
+        note = Notes::createNote(params);
+    } catch(...) {
+        note = NULL;
+    }
     
-    PA_ReturnObject(params, note);
+    PA_ReturnObject(params, note ? note : PA_CreateObject());
 }
 
 void Notes_Create_folder(PA_PluginParameters params) {
     
-    PA_ObjectRef folder = Notes::createFolder(params);
+    PA_ObjectRef folder = NULL;
+    try {
+        folder = Notes::createFolder(params);
+    } catch(...) {
+        folder = NULL;
+    }
     
-    PA_ReturnObject(params, folder);
+    PA_ReturnObject(params, folder ? folder : PA_CreateObject());
 }
 
 void Notes_GET_FOLDERS(PA_PluginParameters params) {
     
-    PA_CollectionRef folder = Notes::getFolders();
+    PA_CollectionRef folder = NULL;
+    try {
+        folder = Notes::getFolders();
+    } catch(...) {
+        folder = NULL;
+    }
     
-    PA_ReturnCollection(params, folder);
+    PA_ReturnCollection(params, folder ? folder : PA_CreateCollection());
 }
 
 void Notes_GET_NOTES(PA_PluginParameters params) {
     
-    PA_CollectionRef notes = Notes::getNotes();
+    PA_CollectionRef notes = NULL;
+    try {
+        notes = Notes::getNotes();
+    } catch(...) {
+        notes = NULL;
+    }
     
-    PA_ReturnCollection(params, notes);
+    PA_ReturnCollection(params, notes ? notes : PA_CreateCollection());
 }
 
 void Notes_GET_ATTACHMENTS(PA_PluginParameters params) {
     
-    PA_CollectionRef attachements = Notes::getAttachments();
+    PA_CollectionRef attachements = NULL;
+    try {
+        attachements = Notes::getAttachments();
+    } catch(...) {
+        attachements = NULL;
+    }
     
-    PA_ReturnCollection(params, attachements);
+    PA_ReturnCollection(params, attachements ? attachements : PA_CreateCollection());
 }
 
 void Notes_GET_ACCOUNTS(PA_PluginParameters params) {
     
-    PA_CollectionRef accounts = Notes::getAccounts();
+    PA_CollectionRef accounts = NULL;
+    try {
+        accounts = Notes::getAccounts();
+    } catch(...) {
+        accounts = NULL;
+    }
     
-    PA_ReturnCollection(params, accounts);
+    PA_ReturnCollection(params, accounts ? accounts : PA_CreateCollection());
 }
 
 void Notes_SET_NOTIFICATION(PA_PluginParameters params) {
@@ -1512,9 +1566,14 @@ void Notes_Get_attachment(PA_PluginParameters params) {
     }
 #endif
     
-    PA_ObjectRef attachment = Notes::getAttachment(Param1);
+    PA_ObjectRef attachment = NULL;
+    try {
+        attachment = Notes::getAttachment(Param1);
+    } catch(...) {
+        attachment = NULL;
+    }
     
-    PA_ReturnObject(params, attachment);
+    PA_ReturnObject(params, attachment ? attachment : PA_CreateObject());
 }
 
 void Notes_Get_note(PA_PluginParameters params) {
@@ -1525,9 +1584,14 @@ void Notes_Get_note(PA_PluginParameters params) {
     
     Param1.fromParamAtIndex(pParams, 1);
     
-    PA_ObjectRef note = Notes::getNote(Param1);
+    PA_ObjectRef note = NULL;
+    try {
+        note = Notes::getNote(Param1);
+    } catch(...) {
+        note = NULL;
+    }
     
-    PA_ReturnObject(params, note);
+    PA_ReturnObject(params, note ? note : PA_CreateObject());
 }
 
 void Notes_Get_folder(PA_PluginParameters params) {
@@ -1538,9 +1602,14 @@ void Notes_Get_folder(PA_PluginParameters params) {
     
     Param1.fromParamAtIndex(pParams, 1);
     
-    PA_ObjectRef folder = Notes::getFolder(Param1);
+    PA_ObjectRef folder = NULL;
+    try {
+        folder = Notes::getFolder(Param1);
+    } catch(...) {
+        folder = NULL;
+    }
     
-    PA_ReturnObject(params, folder);
+    PA_ReturnObject(params, folder ? folder : PA_CreateObject());
 }
 
 void Notes_Get_account(PA_PluginParameters params) {
@@ -1551,7 +1620,12 @@ void Notes_Get_account(PA_PluginParameters params) {
     
     Param1.fromParamAtIndex(pParams, 1);
     
-    PA_ObjectRef account = Notes::getAccount(Param1);
+    PA_ObjectRef account = NULL;
+    try {
+        account = Notes::getAccount(Param1);
+    } catch(...) {
+        account = NULL;
+    }
     
-    PA_ReturnObject(params, account);
+    PA_ReturnObject(params, account ? account : PA_CreateObject());
 }
