@@ -1,3 +1,13 @@
-Notes/build/*
-Notes/test/userPreferences.*
+.DS_Store
 **/.DS_Store
+build/
+test/userPreferences.*
+test/Logs/
+test/Data/Logs/
+test/Project/DerivedData/
+test/Plugins/Default/
+test/Plugins/Notes.build/
+test/Plugins/Notes.bundle/Contents/MacOS/
+test/Plugins/Notes.bundle/Contents/_CodeSignature/
+/Notes.dmg
+/Notes.zip

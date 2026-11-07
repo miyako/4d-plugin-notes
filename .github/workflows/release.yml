@@ -1,0 +1,274 @@
+# Builds the plugin for macOS as a universal (arm64 + x86_64) binary,
+# codesigns + notarizes it, and publishes a GitHub Release with the zip and
+# dmg attached. There is no Windows build: a Windows64/<Product>.4DX committed
+# in the bundle (prebuilt or a stub) is shipped as is.
+#
+# Trigger: push a tag matching v*.*.* by hand. A tag pushed by
+# bump-version.yml with GITHUB_TOKEN does NOT start this workflow: after a
+# bump, run `gh workflow run release.yml -f tag=vX.Y.Z`.
+# You can also run it manually against an existing tag with workflow_dispatch.
+#
+# PORTABILITY: edit only the env block below. Everything else is derived.
+# MACOS_DEPLOYMENT_TARGET must equal MACOSX_DEPLOYMENT_TARGET in the pbxproj.
+# Canonical layout enforced:
+#   test/Plugins/<Product>.bundle/Contents/MacOS/<Product>
+#   test/Plugins/<Product>.bundle/Contents/Windows64/<Product>.4DX
+#   test/Plugins/<Product>.bundle/Contents/Resources/manifest.json
+#
+# The macOS job never deletes the bundle: only the plugin binary and the
+# signature are rebuilt. Anything else committed in the bundle (Windows64/,
+# runtime dylibs in MacOS/, QuickLook/, ...) ships as committed. The runner's
+# file system is case-insensitive, so never `rm -rf .../plugins` (lower case):
+# that deletes .../Plugins too.
+
+name: Build & Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing tag to build (e.g. v2.3.0)
+        required: true
+
+permissions:
+  contents: write
+
+env:
+  # ---- only this needs editing per-project ----
+  PRODUCT_NAME: Notes
+  MACOS_DEPLOYMENT_TARGET: '11.5'
+  # static base for this project (intentional)
+  BASE_DIR: test
+  # ---------------------------------------------
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+
+  version:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.set.outputs.tag }}
+      version: ${{ steps.set.outputs.version }}
+    steps:
+      - id: set
+        env:
+          RAW_TAG: ${{ inputs.tag || github.ref_name }}
+        run: |
+          set -euo pipefail
+          # trim whitespace from a hand-typed workflow_dispatch input (" v1.0.1")
+          TAG="$(echo "$RAW_TAG" | xargs)"
+          if ! [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Tag '${RAW_TAG}' is not of the form vX.Y.Z"
+            exit 1
+          fi
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
+
+  build-macos:
+    name: Build macOS, package, sign, notarize & release
+    needs: [version]
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.version.outputs.tag }}
+
+      - name: check prebuilt libraries
+        run: |
+          set -euo pipefail
+          # every a/... or lib/... file the Xcode project references must be
+          # committed (a gitignored a/* makes the link fail with "no such file")
+          MISSING=0
+          for f in $(grep -o 'path = "\{0,1\}\(a\|lib\)/[^";]*' "${{ env.PRODUCT_NAME }}.xcodeproj/project.pbxproj" | sed 's/^path = "\{0,1\}//' | sort -u); do
+            if [ ! -e "$f" ]; then
+              echo "::error::Missing prebuilt library $f"
+              MISSING=1
+            else
+              echo "$f: $(lipo -archs "$f" 2>/dev/null || echo '?')"
+            fi
+          done
+          exit $MISSING
+
+      - name: import Developer ID certificate
+        env:
+          CERT_BASE64: ${{ secrets.APPLE_DEVELOPER_ID_CERTIFICATE }}
+          CERT_PASSWORD: ${{ secrets.APPLE_DEVELOPER_ID_CERTIFICATE_PASSWORD }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+        run: |
+          set -euo pipefail
+          KEYCHAIN_PATH="$RUNNER_TEMP/build.keychain-db"
+          CERT_PATH="$RUNNER_TEMP/certificate.p12"
+
+          echo -n "$CERT_BASE64" | base64 --decode -o "$CERT_PATH"
+
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security import "$CERT_PATH" -P "$CERT_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+          security list-keychain -d user -s "$KEYCHAIN_PATH" login.keychain
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+
+          echo "KEYCHAIN_PATH=$KEYCHAIN_PATH" >> "$GITHUB_ENV"
+
+      - name: store notarytool credentials
+        env:
+          APPLE_ID: ${{ secrets.NOTARYTOOL_APPLE_ID }}
+          TEAM_ID: ${{ secrets.NOTARYTOOL_TEAM_ID }}
+          APP_PASSWORD: ${{ secrets.NOTARYTOOL_PASSWORD }}
+        run: |
+          xcrun notarytool store-credentials "notarytool-profile" \
+            --apple-id "$APPLE_ID" \
+            --team-id "$TEAM_ID" \
+            --password "$APP_PASSWORD" \
+            --keychain "$KEYCHAIN_PATH"
+
+      - name: build macOS plugin (universal)
+        run: |
+          set -euo pipefail
+          PRODUCT="${{ env.PRODUCT_NAME }}"
+          BASE="${{ env.BASE_DIR }}"
+          XCODE_PROJECT="${PRODUCT}.xcodeproj"
+          XCODE_TARGET="${PRODUCT}"
+          PLUGINS_DIR="${BASE}/Plugins"
+          BUNDLE="${PLUGINS_DIR}/${PRODUCT}.bundle"
+
+          # remove only what the build produces, so a misdirected build fails
+          # at verify instead of shipping a stale committed binary
+          echo "Cleaning stale outputs to avoid /Default/ vs / bug"
+          rm -f "${BUNDLE:?}/Contents/MacOS/${PRODUCT:?}"
+          rm -rf "${BUNDLE:?}/Contents/_CodeSignature"
+          rm -rf "${PLUGINS_DIR:?}/Default"
+          rm -rf "${PLUGINS_DIR:?}/${PRODUCT:?}.build"
+
+          echo "Building $XCODE_PROJECT target $XCODE_TARGET"
+          xcodebuild -project "$XCODE_PROJECT" \
+            -target "$XCODE_TARGET" \
+            -configuration Default \
+            ARCHS="arm64 x86_64" \
+            ONLY_ACTIVE_ARCH=NO \
+            MACOSX_DEPLOYMENT_TARGET="${{ env.MACOS_DEPLOYMENT_TARGET }}" \
+            CODE_SIGNING_ALLOWED=NO \
+            CONFIGURATION_BUILD_DIR="$PWD/$PLUGINS_DIR" \
+            build
+
+          echo "Built:"
+          ls -R "$PLUGINS_DIR"
+
+      - name: verify universal binary
+        run: |
+          set -euo pipefail
+          PRODUCT="${{ env.PRODUCT_NAME }}"
+          BASE="${{ env.BASE_DIR }}"
+          CONTENTS="${BASE}/Plugins/${PRODUCT}.bundle/Contents"
+          BIN="${CONTENTS}/MacOS/${PRODUCT}"
+
+          if [ ! -f "$BIN" ]; then
+            echo "::error::Expected binary not found at $BIN - CONFIGURATION_BUILD_DIR mismatch?"
+            ls -R "$BASE"
+            exit 1
+          fi
+
+          echo "Timestamp check (must be recent):"
+          ls -lT "$BIN" || ls -l --time-style=full "$BIN"
+
+          # separate lines: under set -e a failure left of && is ignored
+          lipo -info "$BIN"
+          lipo -info "$BIN" | grep -q "arm64"
+          lipo -info "$BIN" | grep -q "x86_64"
+          if lipo -info "$BIN" | grep -q "i386"; then
+            echo "::error::i386 slice found - this is a stale binary, not the fresh build"
+            exit 1
+          fi
+
+          # runtime dylibs committed next to the binary must be universal too
+          for lib in "${CONTENTS}"/MacOS/*.dylib; do
+            [ -e "$lib" ] || continue
+            lipo -info "$lib"
+            lipo -info "$lib" | grep -q "arm64"
+            lipo -info "$lib" | grep -q "x86_64"
+          done
+
+          if [ ! -f "${CONTENTS}/Resources/manifest.json" ]; then
+            echo "::error::Missing ${CONTENTS}/Resources/manifest.json"
+            exit 1
+          fi
+          if [ -f constants.xlf ] && [ ! -f "${CONTENTS}/Resources/constants.xlf" ]; then
+            echo "::error::constants.xlf is not copied to ${CONTENTS}/Resources"
+            exit 1
+          fi
+
+      - name: locate bundle
+        run: |
+          echo "BUNDLE_PATH=${{ env.BASE_DIR }}/Plugins/${{ env.PRODUCT_NAME }}.bundle" >> "$GITHUB_ENV"
+
+      - name: codesign
+        run: |
+          set -euo pipefail
+          IDENTITY=$(security find-identity -v -p codesigning "$KEYCHAIN_PATH" \
+            | grep "Developer ID Application" | head -1 | sed -E 's/.*"(.*)".*/\1/')
+          if [ -z "$IDENTITY" ]; then
+            echo "::error::No Developer ID Application identity found"
+            security find-identity -v -p codesigning "$KEYCHAIN_PATH"
+            exit 1
+          fi
+          echo "Signing with: $IDENTITY"
+          codesign --verbose --deep --timestamp --force --options=runtime \
+            --sign "$IDENTITY" "$BUNDLE_PATH"
+          codesign --verify --deep --strict --verbose=2 "$BUNDLE_PATH"
+
+      - name: package, notarize & staple
+        run: |
+          set -euo pipefail
+          PRODUCT="${{ env.PRODUCT_NAME }}"
+          VERSION="${{ needs.version.outputs.version }}"
+          ZIP_PATH="${PRODUCT}-${VERSION}.zip"
+          DMG_PATH="${PRODUCT}-${VERSION}.dmg"
+
+          # zip: cross-platform bundle (win + mac binaries together), what most users grab
+          echo "Creating $ZIP_PATH"
+          ditto -c -k --keepParent "$BUNDLE_PATH" "$ZIP_PATH"
+
+          # dmg: mac-friendly, and the only format Apple lets us staple a ticket to
+          echo "Creating $DMG_PATH"
+          hdiutil create -format UDBZ -volname "$PRODUCT" -srcfolder "$BUNDLE_PATH" "$DMG_PATH"
+
+          # submit and wait; on anything but Accepted, print Apple's log and fail
+          # (notarytool submit --wait exits 0 even when the status is Invalid)
+          notarize() {
+            local OUT ID STATUS
+            OUT=$(xcrun notarytool submit "$1" --keychain-profile "notarytool-profile" --keychain "$KEYCHAIN_PATH" \
+              --wait --output-format json) || true
+            echo "$OUT"
+            ID=$(plutil -extract id raw -o - - <<< "$OUT" 2>/dev/null || true)
+            STATUS=$(plutil -extract status raw -o - - <<< "$OUT" 2>/dev/null || true)
+            if [ "$STATUS" != "Accepted" ]; then
+              echo "::error::Notarization of $1 returned '${STATUS:-no status}'"
+              if [ -n "$ID" ]; then
+                xcrun notarytool log "$ID" --keychain-profile "notarytool-profile" --keychain "$KEYCHAIN_PATH" || true
+              fi
+              return 1
+            fi
+          }
+
+          notarize "$ZIP_PATH"
+          notarize "$DMG_PATH"
+          xcrun stapler staple "$DMG_PATH"
+
+          echo "ZIP_PATH=$ZIP_PATH" >> "$GITHUB_ENV"
+          echo "DMG_PATH=$DMG_PATH" >> "$GITHUB_ENV"
+          ls -lh "$ZIP_PATH" "$DMG_PATH"
+
+      - name: create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.version.outputs.tag }}
+          name: ${{ needs.version.outputs.tag }}
+          files: |
+            ${{ env.ZIP_PATH }}
+            ${{ env.DMG_PATH }}
