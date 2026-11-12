@@ -1,0 +1,20 @@
+name: ownership-regressions
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+  asan-ubsan:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Run ownership regressions
+        run: tests/ownership/run.sh .
