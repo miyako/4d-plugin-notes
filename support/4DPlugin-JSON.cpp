@@ -310,6 +310,7 @@ bool ob_get_a(PA_ObjectRef obj, const wchar_t *_key, CUTF8String *value) {
         if(is_defined)
         {
             PA_Variable v = PA_GetObjectProperty(obj, &key);
+            bool got = (PA_GetLastError() == eER_NoErr);
             if(PA_GetVariableKind(v) == eVK_Unistring)
             {
                 PA_Unistring uvalue = PA_GetStringVariable(v);
@@ -348,6 +349,8 @@ bool ob_get_a(PA_ObjectRef obj, const wchar_t *_key, CUTF8String *value) {
                 }
 #endif
             }
+            // PA_GetObjectProperty returns an owned copy
+            if(got) PA_ClearVariable(&v);
         }
 
         PA_DisposeUnistring(&key);
@@ -419,10 +422,13 @@ PA_CollectionRef ob_get_c(PA_ObjectRef obj, const wchar_t *_key) {
         if(PA_HasObjectProperty(obj, &key))
         {
             PA_Variable v = PA_GetObjectProperty(obj, &key);
+            bool got = (PA_GetLastError() == eER_NoErr);
             if(PA_GetVariableKind(v) == eVK_Collection)
             {
-                value = PA_GetCollectionVariable(v);
+                value = PA_GetCollectionVariable(v);// still referenced by obj after the clear below
             }
+            // PA_GetObjectProperty returns a retained copy
+            if(got) PA_ClearVariable(&v);
         }
 
         PA_DisposeUnistring(&key);
@@ -443,10 +449,13 @@ PA_ObjectRef ob_get_o(PA_ObjectRef obj, const wchar_t *_key) {
         if(PA_HasObjectProperty(obj, &key))
         {
             PA_Variable v = PA_GetObjectProperty(obj, &key);
+            bool got = (PA_GetLastError() == eER_NoErr);
             if(PA_GetVariableKind(v) == eVK_Object)
             {
-                value = PA_GetObjectVariable(v);
+                value = PA_GetObjectVariable(v);// still referenced by obj after the clear below
             }
+            // PA_GetObjectProperty returns a retained copy
+            if(got) PA_ClearVariable(&v);
         }
 
         PA_DisposeUnistring(&key);

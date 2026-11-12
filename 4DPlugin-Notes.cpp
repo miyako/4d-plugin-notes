@@ -1096,8 +1096,10 @@ PA_ObjectRef createNote(PA_PluginParameters params)
                     {
                         p = PA_DuplicatePicture(p, kcpRetainOnly);
                         PA_Variable args[2];
-                        args[0] = PA_CreateVariable(eVK_Picture);
-                        PA_SetPictureVariable(&args[0], p);// disposed each time with PA_ClearVariable
+                        // eVK_Undefined: eVK_Picture would allocate a picture that the
+                        // shallow PA_SetPictureVariable below overwrites and leaks
+                        args[0] = PA_CreateVariable(eVK_Undefined);
+                        PA_SetPictureVariable(&args[0], p);// released by PA_ClearVariable below
                         args[1] = PA_CreateVariable(eVK_Undefined);
                         PA_Unistring codec = PA_CreateUnistring((PA_Unichar *)u".png");
                         PA_SetStringVariable(&args[1], &codec);
@@ -1133,6 +1135,8 @@ PA_ObjectRef createNote(PA_PluginParameters params)
                             PA_UnlockHandle(h);
                         }
                         PA_DisposeHandle(h);
+                        // releases the converted picture (or the retained one if conversion failed)
+                        PA_ClearVariable(&args[0]);
                     }//p
                 }//count
             }//eVK_ArrayPicture
